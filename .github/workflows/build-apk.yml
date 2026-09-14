@@ -57,11 +57,11 @@ jobs:
           retention-days: 30
 
       - name: Chép lên Google Drive
-        if: ${{ secrets.RCLONE_CONF != '' }}
         env:
           RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
           APK_NAME: ${{ steps.build.outputs.APK_NAME }}
         run: |
+          if [ -z "$RCLONE_CONF" ]; then echo "Chưa có RCLONE_CONF → bỏ qua bước Drive"; exit 0; fi
           curl -fsSL https://rclone.org/install.sh | sudo bash > /dev/null
           mkdir -p ~/.config/rclone
           echo "$RCLONE_CONF" | base64 -d > ~/.config/rclone/rclone.conf
