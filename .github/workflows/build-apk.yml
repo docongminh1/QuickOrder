@@ -1,0 +1,74 @@
+name: Build APK → Drive
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**.md"]
+  workflow_dispatch:
+
+concurrency:
+  group: build-apk
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Cài thư viện
+        run: npm ci
+
+      - name: Kiểm tra kiểu + test engine
+        run: |
+          npx tsc --noEmit -p .
+          npx tsx tools/engine-test.ts > /dev/null
+          npx tsx tools/sim-500.ts | head -20
+
+      - name: Build APK release
+        id: build
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./tools/ci-build.sh
+
+      - name: Lưu APK vào GitHub (dự phòng)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.APK_NAME }}
+          path: dist/*.apk
+          retention-days: 30
+
+      - name: Chép lên Google Drive
+        if: ${{ secrets.RCLONE_CONF != '' }}
+        env:
+          RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
+          APK_NAME: ${{ steps.build.outputs.APK_NAME }}
+        run: |
+          curl -fsSL https://rclone.org/install.sh | sudo bash > /dev/null
+          mkdir -p ~/.config/rclone
+          echo "$RCLONE_CONF" | base64 -d > ~/.config/rclone/rclone.conf
+          DEST="gdrive:CatLieuNhanh"
+          rclone copy "dist/$APK_NAME" "$DEST" --progress
+          rclone copy CatLieuNhanh_mau.xlsx "$DEST"
+          rclone copy HUONG_DAN.md "$DEST"
+          # xoá các APK phiên bản cũ, giữ bản vừa lên
+          rclone lsf "$DEST" --include "CatLieuNhanh-v*.apk" | grep -v "^$APK_NAME$" | while read -r f; do rclone deletefile "$DEST/$f"; done || true
+          echo "== Drive hiện có:"; rclone lsf "$DEST"
