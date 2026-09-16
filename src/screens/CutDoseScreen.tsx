@@ -261,6 +261,11 @@ function DoseCard({ item, flagged }: { item: DoseItem; flagged: string | null })
         <Text style={s.name}>{name}</Text>
         {strength ? <Text style={s.strength}>{strength}</Text> : null}
       </View>
+      {item.drug?.location ? (
+        <View style={s.locRow}><Text style={s.loc}>📍 {item.drug.location}</Text></View>
+      ) : item.drug ? (
+        <Text style={s.locMissing}>📍 chưa ghi vị trí kệ, hỏi dược sĩ</Text>
+      ) : null}
       {item.rxOnly ? (
         <Text style={[s.dose, { color: C.danger }]}>Thuốc kê đơn. Không tự bán, hỏi dược sĩ.</Text>
       ) : item.outOfStock ? (
@@ -273,7 +278,7 @@ function DoseCard({ item, flagged }: { item: DoseItem; flagged: string | null })
       {flagged ? <Text style={s.flagged}>⛔ {flagged}</Text> : null}
       {item.alternatives.length > 0 && (
         <Text style={s.alt}>
-          Hết thì thay: {item.alternatives.slice(0, 3).map((d) => d.name).join(', ')}
+          Hết thì thay: {item.alternatives.slice(0, 3).map((d) => `${d.name}${d.location ? ` (${d.location})` : ''}`).join(', ')}
           {item.alternatives.length > 3 ? ` +${item.alternatives.length - 3} nữa` : ''}
         </Text>
       )}
@@ -333,6 +338,9 @@ const s = StyleSheet.create({
   nameRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 },
   name: { fontSize: 17, fontWeight: '700', color: C.ink, flexShrink: 1 },
   strength: { fontSize: 13, color: C.ink2, fontVariant: ['tabular-nums'] },
+  locRow: { alignSelf: 'flex-start', backgroundColor: C.warnSoft, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
+  loc: { fontSize: 14, fontWeight: '700', color: C.warn },
+  locMissing: { fontSize: 12, color: C.muted, fontStyle: 'italic' },
   dose: { fontSize: 15, color: C.ink, lineHeight: 21 },
   calc: { alignSelf: 'flex-start', backgroundColor: C.accentSoft, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, marginTop: 2 },
   calcText: { fontSize: 12, color: C.accent, fontVariant: ['tabular-nums'] },

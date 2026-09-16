@@ -13,6 +13,7 @@ export interface Drug {
   audience: DrugAudience;
   inStock: boolean;        // Còn hàng (mặc định có)
   rx: boolean;             // Kê đơn → không tự gợi ý
+  location: string;        // Vị trí trên kệ
   note: string;
 }
 

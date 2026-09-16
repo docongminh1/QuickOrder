@@ -27,7 +27,7 @@ export default function LookupScreen() {
           <TextInput
             value={q}
             onChangeText={onType}
-            placeholder="Gõ tên thuốc hoặc hoạt chất…"
+            placeholder="Gõ tên thuốc, hoạt chất, hoặc mã kệ (A3)…"
             placeholderTextColor={C.muted}
             style={s.input}
             autoCorrect={false}
@@ -65,6 +65,7 @@ export default function LookupScreen() {
               <Text style={s.heroLabel}>HOẠT CHẤT</Text>
               <Text style={s.heroTitle}>{result.drug.active}{result.drug.mgText ? ` · ${result.drug.mgText} mg` : ''}</Text>
               <Text style={s.heroSub}>{[result.drug.name, result.drug.form, result.drug.brand, result.drug.note].filter(Boolean).join(' · ')}</Text>
+              {result.drug.location ? <Text style={s.heroLoc}>📍 Lấy ở: {result.drug.location}</Text> : null}
               <View style={s.badges}>
                 {result.drug.inStock ? <Badge text="Còn hàng" kind="ok" /> : <Badge text="Hết hàng / chưa nhập" kind="danger" />}
                 {result.drug.rx ? <Badge text="Kê đơn, hỏi dược sĩ" kind="danger" /> : null}
@@ -116,7 +117,10 @@ function Row({ d, sub }: { d: Drug; sub?: string }) {
         </View>
         <Text style={s.rowSub}>{sub ?? [d.brand, d.form, d.audience !== 'Cả hai' ? d.audience : '', d.note].filter(Boolean).join(' · ')}</Text>
       </View>
-      <Text style={s.rowMg}>{d.mgText ? `${d.mgText} mg` : d.form}</Text>
+      <View style={{ alignItems: 'flex-end', gap: 2 }}>
+        <Text style={s.rowMg}>{d.mgText ? `${d.mgText} mg` : d.form}</Text>
+        {d.location ? <Text style={s.rowLoc}>📍 {d.location}</Text> : null}
+      </View>
     </Card>
   );
 }
@@ -137,6 +141,8 @@ const s = StyleSheet.create({
   rowName: { fontSize: 15, fontWeight: '600', color: C.ink },
   rowSub: { fontSize: 12.5, color: C.muted, marginTop: 1 },
   rowMg: { fontSize: 14, color: C.ink2, fontVariant: ['tabular-nums'] },
+  rowLoc: { fontSize: 12, color: C.warn, fontWeight: '700' },
+  heroLoc: { fontSize: 15, color: C.warn, fontWeight: '800', marginTop: 4 },
   badges: { flexDirection: 'row', gap: 6, marginTop: 6, flexWrap: 'wrap' },
   badge: { borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 },
   badgeText: { color: '#fff', fontSize: 11, fontWeight: '700' },

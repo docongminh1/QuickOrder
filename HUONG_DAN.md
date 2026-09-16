@@ -1,7 +1,7 @@
 # Cắt Liều Nhanh · hướng dẫn nhanh
 
 ## Cài trên Android
-1. Chép file `CatLieuNhanh-v1.0.4.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
+1. Chép file `CatLieuNhanh-v1.0.5.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
 2. Bấm vào file, Android hỏi "Cho phép cài ứng dụng từ nguồn này" → Cho phép → Cài đặt.
 3. Mở app. Lúc đầu app đã có sẵn bộ dữ liệu mẫu (59 thuốc, 81 dòng luật, 26 triệu chứng) để bấm thử ngay.
 
@@ -26,7 +26,7 @@
 File `CatLieuNhanh_mau.xlsx` có 4 sheet: Hướng dẫn, Thuốc, Luật cắt liều, Triệu chứng.
 Ô tiêu đề màu đậm là cột bắt buộc. Di chuột lên tiêu đề để xem chú thích cột.
 
-- **Thuốc**: 1 dòng 1 thuốc. Cột *Hoạt chất* phải viết giống nhau giữa các thuốc (Paracetamol, không lúc Paracetamol lúc Para). Cột *Còn hàng*: Có / Hết; thuốc khách hay hỏi mà quầy chưa nhập cũng ghi vào và đánh Hết để nhân viên tra được. Cột *Kê đơn*: ghi Có với kháng sinh, corticoid…
+- **Thuốc**: 1 dòng 1 thuốc. Cột *Hoạt chất* phải viết giống nhau giữa các thuốc (Paracetamol, không lúc Paracetamol lúc Para). Cột *Còn hàng*: Có / Hết; thuốc khách hay hỏi mà quầy chưa nhập cũng ghi vào và đánh Hết để nhân viên tra được. Cột *Kê đơn*: ghi Có với kháng sinh, corticoid… Cột *Vị trí*: ghi đúng nhãn dán trên kệ (Kệ A3, Ngăn kéo 2, Tủ lạnh); app in 📍 dưới tên thuốc, và gõ mã kệ ở tab Tra thuốc sẽ ra hết thuốc kệ đó.
 - **Luật cắt liều**: 1 dòng = 1 triệu chứng + 1 đối tượng + 1 hoạt chất. Điền **mg/kg/lần** (app nhân với số kg) HOẶC **mg cố định/lần**. Thuốc không tính theo mg (xịt, nhỏ, ml) thì ghi vào **Liều ghi tay**.
 - **Triệu chứng**: chỉ để xếp chip cho gọn.
 

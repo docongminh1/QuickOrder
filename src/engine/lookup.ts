@@ -16,8 +16,10 @@ export function searchDrugs(data: DataSet, q: string, limit = 30): Drug[] {
   for (const d of data.drugs) {
     const name = norm(d.name);
     const act = norm(d.active);
+    const loc = norm(d.location);
     if (name.startsWith(n)) starts.push(d);
     else if (name.includes(n) || act.includes(n)) contains.push(d);
+    else if (loc && n.length >= 2 && (loc.includes(n) || loc.replace(/\s/g, '').includes(n.replace(/\s/g, '')))) contains.push(d); // gõ mã kệ "A3" → thuốc ở kệ đó
   }
   return [...starts, ...contains].slice(0, limit);
 }

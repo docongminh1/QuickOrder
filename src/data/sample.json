@@ -10,6 +10,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A1",
    "note": ""
   },
   {
@@ -21,6 +22,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A2",
    "note": ""
   },
   {
@@ -32,6 +34,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A3",
    "note": ""
   },
   {
@@ -43,6 +46,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B1",
    "note": ""
   },
   {
@@ -54,6 +58,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B2",
    "note": ""
   },
   {
@@ -65,6 +70,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B3",
    "note": "bột sủi vị cam"
   },
   {
@@ -76,6 +82,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C1",
    "note": ""
   },
   {
@@ -87,6 +94,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C2",
    "note": ""
   },
   {
@@ -98,6 +106,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Tủ kính",
    "note": "có caffein"
   },
   {
@@ -109,6 +118,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 1",
    "note": ""
   },
   {
@@ -120,6 +130,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 2",
    "note": ""
   },
   {
@@ -131,6 +142,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ D1",
    "note": "mg ghi theo 5 ml"
   },
   {
@@ -142,6 +154,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A1",
    "note": ""
   },
   {
@@ -153,6 +166,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A2",
    "note": ""
   },
   {
@@ -164,6 +178,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A3",
    "note": ""
   },
   {
@@ -175,6 +190,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B1",
    "note": ""
   },
   {
@@ -186,6 +202,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B2",
    "note": "mg ghi theo 5 ml"
   },
   {
@@ -197,6 +214,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B3",
    "note": ""
   },
   {
@@ -208,6 +226,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C1",
    "note": "mg ghi theo 5 ml"
   },
   {
@@ -219,6 +238,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C2",
    "note": ""
   },
   {
@@ -230,6 +250,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Tủ lạnh",
    "note": "thảo dược, liều theo ml"
   },
   {
@@ -241,6 +262,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 1",
    "note": "không buồn ngủ"
   },
   {
@@ -252,6 +274,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 2",
    "note": ""
   },
   {
@@ -263,6 +286,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ D2",
    "note": "mg ghi theo 5 ml"
   },
   {
@@ -274,6 +298,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A1",
    "note": ""
   },
   {
@@ -285,6 +310,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A2",
    "note": ""
   },
   {
@@ -296,6 +322,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A3",
    "note": "gây buồn ngủ"
   },
   {
@@ -307,6 +334,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B1",
    "note": ""
   },
   {
@@ -318,6 +346,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B2",
    "note": ""
   },
   {
@@ -329,6 +358,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B3",
    "note": "ngậm dưới lưỡi"
   },
   {
@@ -340,6 +370,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C1",
    "note": "trên 6 tuổi"
   },
   {
@@ -351,6 +382,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C2",
    "note": ""
   },
   {
@@ -362,6 +394,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Tủ kính",
    "note": "nhỏ mũi, súc miệng"
   },
   {
@@ -373,6 +406,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 1",
    "note": "không quá 5 ngày"
   },
   {
@@ -384,6 +418,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 2",
    "note": "trên 6 tuổi"
   },
   {
@@ -395,6 +430,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ D3",
    "note": "pha đúng lượng nước"
   },
   {
@@ -406,6 +442,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A1",
    "note": "gói 3 g"
   },
   {
@@ -417,6 +454,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A2",
    "note": ""
   },
   {
@@ -428,6 +466,7 @@
    "audience": "Trẻ em",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A3",
    "note": ""
   },
   {
@@ -439,6 +478,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B1",
    "note": ""
   },
   {
@@ -450,6 +490,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B2",
    "note": "không dùng trẻ dưới 12 tuổi"
   },
   {
@@ -461,6 +502,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B3",
    "note": "men vi sinh"
   },
   {
@@ -472,6 +514,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C1",
    "note": ""
   },
   {
@@ -483,6 +526,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C2",
    "note": ""
   },
   {
@@ -494,6 +538,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Tủ kính",
    "note": "uống trước ăn sáng"
   },
   {
@@ -505,6 +550,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 1",
    "note": ""
   },
   {
@@ -516,6 +562,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Ngăn kéo 2",
    "note": ""
   },
   {
@@ -527,6 +574,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ D1",
    "note": ""
   },
   {
@@ -538,6 +586,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A1",
    "note": "10 g/15 ml"
   },
   {
@@ -549,6 +598,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A2",
    "note": ""
   },
   {
@@ -560,6 +610,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ A3",
    "note": ""
   },
   {
@@ -571,6 +622,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B1",
    "note": ""
   },
   {
@@ -582,6 +634,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B2",
    "note": ""
   },
   {
@@ -593,6 +646,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ B3",
    "note": ""
   },
   {
@@ -604,6 +658,7 @@
    "audience": "Cả hai",
    "inStock": "Có",
    "rx": "",
+   "location": "Kệ C1",
    "note": "bôi ngoài"
   },
   {
@@ -615,6 +670,7 @@
    "audience": "Người lớn",
    "inStock": "Hết",
    "rx": "",
+   "location": "Kệ C2",
    "note": "khách hay hỏi"
   },
   {
@@ -626,6 +682,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "",
+   "location": "Tủ kính",
    "note": "cảm cúm"
   },
   {
@@ -637,6 +694,7 @@
    "audience": "Người lớn",
    "inStock": "Hết",
    "rx": "",
+   "location": "Ngăn kéo 1",
    "note": ""
   },
   {
@@ -648,6 +706,7 @@
    "audience": "Người lớn",
    "inStock": "Có",
    "rx": "Có",
+   "location": "Ngăn kéo 2",
    "note": "kháng sinh, phải có toa"
   }
  ],

@@ -29,7 +29,7 @@ async function shareBase64(base64: string, fileName: string) {
 
 function toWorkbookBase64(ds: DataSet): string {
   const wb = xlsxUtils.book_new();
-  const drugs = ds.drugs.map((d) => ({ 'Tên thuốc': d.name, 'Hoạt chất': d.active, mg: d.mgText, 'Dạng': d.form, 'Hãng': d.brand, 'Đối tượng': d.audience, 'Còn hàng': d.inStock ? 'Có' : 'Hết', 'Kê đơn': d.rx ? 'Có' : '', 'Ghi chú': d.note }));
+  const drugs = ds.drugs.map((d) => ({ 'Tên thuốc': d.name, 'Hoạt chất': d.active, mg: d.mgText, 'Dạng': d.form, 'Hãng': d.brand, 'Đối tượng': d.audience, 'Còn hàng': d.inStock ? 'Có' : 'Hết', 'Kê đơn': d.rx ? 'Có' : '', 'Vị trí': d.location, 'Ghi chú': d.note }));
   const rules = ds.rules.map((r) => ({
     'Triệu chứng': r.symptom, 'Đối tượng': r.audience, 'Nhóm': r.group, 'Hoạt chất': r.active,
     'mg/kg/lần': r.mgPerKg ?? '', 'mg cố định/lần': r.mgFixedText, 'Lần/ngày': r.timesLabel.replace('–', '-'),

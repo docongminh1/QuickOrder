@@ -4,7 +4,7 @@ import { norm, text, num, times, maxPerDay, splitActives } from './normalize';
 import type { Audience, DataSet, Drug, DrugAudience, ImportError, RedFlag, Rule, Symptom } from './types';
 
 /** Bản ghi thô với khoá chuẩn — dùng chung cho Excel và JSON mẫu. */
-export interface RawDrug { name: unknown; active: unknown; mg: unknown; form: unknown; brand?: unknown; audience?: unknown; inStock?: unknown; rx?: unknown; note?: unknown }
+export interface RawDrug { name: unknown; active: unknown; mg: unknown; form: unknown; brand?: unknown; audience?: unknown; inStock?: unknown; rx?: unknown; location?: unknown; note?: unknown }
 export interface RawRule {
   symptom: unknown; audience: unknown; group?: unknown; active: unknown; mgPerKg?: unknown; mgFixed?: unknown;
   timesPerDay?: unknown; maxPerDay?: unknown; freeText?: unknown; howTo?: unknown; warning?: unknown; priority?: unknown;
@@ -15,7 +15,7 @@ export interface RawFlag { text: unknown; audience?: unknown; action?: unknown }
 const SHEET = { drugs: 'Thuốc', rules: 'Luật cắt liều', symptoms: 'Triệu chứng', flags: 'Dấu hiệu nguy hiểm' };
 
 const DRUG_COLS: Record<string, keyof RawDrug> = {
-  'ten thuoc': 'name', 'hoat chat': 'active', 'mg': 'mg', 'dang': 'form', 'hang': 'brand', 'doi tuong': 'audience', 'con hang': 'inStock', 'ke don': 'rx', 'ghi chu': 'note',
+  'ten thuoc': 'name', 'hoat chat': 'active', 'mg': 'mg', 'dang': 'form', 'hang': 'brand', 'doi tuong': 'audience', 'con hang': 'inStock', 'ke don': 'rx', 'vi tri': 'location', 'ghi chu': 'note',
 };
 const RULE_COLS: Record<string, keyof RawRule> = {
   'trieu chung': 'symptom', 'doi tuong': 'audience', 'nhom': 'group', 'hoat chat': 'active', 'mg/kg/lan': 'mgPerKg',
@@ -76,7 +76,7 @@ export function buildDataSet(
     const rx = rxTxt === 'co' || rxTxt === 'x' || rxTxt === 'yes' || rxTxt === '1' || rxTxt === 'true' || norm(note).includes('ke don');
     drugs.push({
       name, active, actives, isCombo: actives.length > 1,
-      mg: actives.length > 1 ? null : num(r.mg), mgText: text(r.mg), form, brand: text(r.brand), audience: aud, inStock, rx, note,
+      mg: actives.length > 1 ? null : num(r.mg), mgText: text(r.mg), form, brand: text(r.brand), audience: aud, inStock, rx, location: text(r.location), note,
     });
   }
   const activeSet = new Set(drugs.map((d) => norm(d.active)));

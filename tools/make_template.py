@@ -12,67 +12,67 @@ from openpyxl.comments import Comment
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------- Thuốc
-# Tên thuốc | Hoạt chất | mg | Dạng | Hãng | Đối tượng | Còn hàng | Kê đơn | Ghi chú
+# Tên thuốc | Hoạt chất | mg | Dạng | Hãng | Đối tượng | Còn hàng | Kê đơn | Vị trí | Ghi chú
 DRUGS = [
- ("Panadol", "Paracetamol", 500, "viên", "GSK", "Người lớn", "Có", "", ""),
- ("Hapacol 500", "Paracetamol", 500, "viên", "DHG", "Người lớn", "Có", "", ""),
- ("Efferalgan 500", "Paracetamol", 500, "viên sủi", "UPSA", "Người lớn", "Có", "", ""),
- ("Tylenol 500", "Paracetamol", 500, "viên", "Janssen", "Người lớn", "Có", "", ""),
- ("Partamol 500", "Paracetamol", 500, "viên", "Stella", "Người lớn", "Có", "", ""),
- ("Hapacol 250", "Paracetamol", 250, "gói", "DHG", "Trẻ em", "Có", "", "bột sủi vị cam"),
- ("Hapacol 150", "Paracetamol", 150, "gói", "DHG", "Trẻ em", "Có", "", ""),
- ("Efferalgan 150", "Paracetamol", 150, "gói", "UPSA", "Trẻ em", "Có", "", ""),
- ("Panadol Extra", "Paracetamol + Caffein", "500 + 65", "viên", "GSK", "Người lớn", "Có", "", "có caffein"),
- ("Brufen 400", "Ibuprofen", 400, "viên", "Abbott", "Người lớn", "Có", "", ""),
- ("Ibuprofen 400 Stella", "Ibuprofen", 400, "viên", "Stella", "Người lớn", "Có", "", ""),
- ("Brufen siro 100mg/5ml", "Ibuprofen", 100, "siro", "Abbott", "Trẻ em", "Có", "", "mg ghi theo 5 ml"),
- ("Acemuc 200", "Acetylcystein", 200, "gói", "Sanofi", "Người lớn", "Có", "", ""),
- ("Acemuc 100", "Acetylcystein", 100, "gói", "Sanofi", "Trẻ em", "Có", "", ""),
- ("Mitux 200", "Acetylcystein", 200, "gói", "DHG", "Người lớn", "Có", "", ""),
- ("Bisolvon 8", "Bromhexin", 8, "viên", "Boehringer", "Người lớn", "Có", "", ""),
- ("Bromhexin 4 (siro 4mg/5ml)", "Bromhexin", 4, "siro", "Nadyphar", "Trẻ em", "Có", "", "mg ghi theo 5 ml"),
- ("Mucosolvan 30", "Ambroxol", 30, "viên", "Boehringer", "Người lớn", "Có", "", ""),
- ("Ambroxol 15 siro 15mg/5ml", "Ambroxol", 15, "siro", "Imexpharm", "Trẻ em", "Có", "", "mg ghi theo 5 ml"),
- ("Dextromethorphan 15", "Dextromethorphan", 15, "viên", "Traphaco", "Người lớn", "Có", "", ""),
- ("Prospan", "Cao khô lá thường xuân", "", "siro", "Engelhard", "Cả hai", "Có", "", "thảo dược, liều theo ml"),
- ("Clarityne 10", "Loratadin", 10, "viên", "Bayer", "Cả hai", "Có", "", "không buồn ngủ"),
- ("Loratadin 10 Stella", "Loratadin", 10, "viên", "Stella", "Cả hai", "Có", "", ""),
- ("Loratadin siro 5mg/5ml", "Loratadin", 5, "siro", "Imexpharm", "Trẻ em", "Có", "", "mg ghi theo 5 ml"),
- ("Zyrtec 10", "Cetirizin", 10, "viên", "UCB", "Người lớn", "Có", "", ""),
- ("Cetirizin 10 Stella", "Cetirizin", 10, "viên", "Stella", "Người lớn", "Có", "", ""),
- ("Chlorpheniramin 4", "Chlorpheniramin", 4, "viên", "Nadyphar", "Cả hai", "Có", "", "gây buồn ngủ"),
- ("Telfast 60", "Fexofenadin", 60, "viên", "Sanofi", "Người lớn", "Có", "", ""),
- ("Telfast 180", "Fexofenadin", 180, "viên", "Sanofi", "Người lớn", "Có", "", ""),
- ("Alphachymotrypsin 4,2", "Alphachymotrypsin", 4.2, "viên", "Traphaco", "Người lớn", "Có", "", "ngậm dưới lưỡi"),
- ("Strepsils", "Amylmetacresol + Dichlorobenzyl alcohol", "", "viên ngậm", "Reckitt", "Cả hai", "Có", "", "trên 6 tuổi"),
- ("Betadine súc họng 1%", "Povidon iod", "", "chai", "Mundipharma", "Người lớn", "Có", "", ""),
- ("Nước muối sinh lý 0,9%", "Natri clorid", "", "chai", "Nhiều hãng", "Cả hai", "Có", "", "nhỏ mũi, súc miệng"),
- ("Otrivin 0,1%", "Xylometazolin", "", "chai xịt", "GSK", "Người lớn", "Có", "", "không quá 5 ngày"),
- ("Otrivin 0,05%", "Xylometazolin", "", "chai xịt", "GSK", "Trẻ em", "Có", "", "trên 6 tuổi"),
- ("Oresol", "Oresol", "", "gói", "Nhiều hãng", "Cả hai", "Có", "", "pha đúng lượng nước"),
- ("Smecta", "Diosmectit", 3000, "gói", "Ipsen", "Cả hai", "Có", "", "gói 3 g"),
- ("Hidrasec 10", "Racecadotril", 10, "gói", "Ferrer", "Trẻ em", "Có", "", ""),
- ("Hidrasec 30", "Racecadotril", 30, "gói", "Ferrer", "Trẻ em", "Có", "", ""),
- ("Hidrasec 100", "Racecadotril", 100, "viên", "Ferrer", "Người lớn", "Có", "", ""),
- ("Loperamid 2", "Loperamid", 2, "viên", "Stella", "Người lớn", "Có", "", "không dùng trẻ dưới 12 tuổi"),
- ("Enterogermina", "Bacillus clausii", "", "ống", "Sanofi", "Cả hai", "Có", "", "men vi sinh"),
- ("Zinc 10", "Kẽm", 10, "viên", "DHG", "Cả hai", "Có", "", ""),
- ("Domperidon 10", "Domperidon", 10, "viên", "Stella", "Người lớn", "Có", "", ""),
- ("Omeprazol 20", "Omeprazol", 20, "viên", "Stella", "Người lớn", "Có", "", "uống trước ăn sáng"),
- ("Phosphalugel", "Aluminium phosphat", "", "gói", "Sanofi", "Cả hai", "Có", "", ""),
- ("Simethicon 80", "Simethicon", 80, "viên", "Traphaco", "Người lớn", "Có", "", ""),
- ("Sorbitol 5g", "Sorbitol", 5000, "gói", "Sanofi", "Người lớn", "Có", "", ""),
- ("Duphalac", "Lactulose", "", "gói", "Abbott", "Cả hai", "Có", "", "10 g/15 ml"),
- ("Spasmaverine 40", "Alverin", 40, "viên", "Sanofi", "Người lớn", "Có", "", ""),
- ("Dimenhydrinat 50", "Dimenhydrinat", 50, "viên", "Nadyphar", "Cả hai", "Có", "", ""),
- ("Rotundin 30", "Rotundin", 30, "viên", "Traphaco", "Người lớn", "Có", "", ""),
- ("Vitamin C 500", "Vitamin C", 500, "viên", "DHG", "Cả hai", "Có", "", ""),
- ("Vitamin 3B", "Vitamin B1 + B6 + B12", "", "viên", "DHG", "Người lớn", "Có", "", ""),
- ("Hydrocortison 1% kem", "Hydrocortison", "", "tuýp", "Nhiều hãng", "Cả hai", "Có", "", "bôi ngoài"),
- ("Alaxan", "Ibuprofen + Paracetamol", "200 + 325", "viên", "United", "Người lớn", "Hết", "", "khách hay hỏi"),
- ("Decolgen Forte", "Paracetamol + Phenylephrin + Chlorpheniramin", "500 + 10 + 2", "viên", "United", "Người lớn", "Có", "", "cảm cúm"),
- ("Tiffy", "Paracetamol + Phenylephrin + Chlorpheniramin", "500 + 10 + 2", "viên", "Thai Nakorn", "Người lớn", "Hết", "", ""),
- ("Augmentin 625", "Amoxicillin + Acid clavulanic", "500 + 125", "viên", "GSK", "Người lớn", "Có", "Có", "kháng sinh, phải có toa"),
+ ("Panadol", "Paracetamol", 500, "viên", "GSK", "Người lớn", "Có", "", "Kệ A1", ""),
+ ("Hapacol 500", "Paracetamol", 500, "viên", "DHG", "Người lớn", "Có", "", "Kệ A2", ""),
+ ("Efferalgan 500", "Paracetamol", 500, "viên sủi", "UPSA", "Người lớn", "Có", "", "Kệ A3", ""),
+ ("Tylenol 500", "Paracetamol", 500, "viên", "Janssen", "Người lớn", "Có", "", "Kệ B1", ""),
+ ("Partamol 500", "Paracetamol", 500, "viên", "Stella", "Người lớn", "Có", "", "Kệ B2", ""),
+ ("Hapacol 250", "Paracetamol", 250, "gói", "DHG", "Trẻ em", "Có", "", "Kệ B3", "bột sủi vị cam"),
+ ("Hapacol 150", "Paracetamol", 150, "gói", "DHG", "Trẻ em", "Có", "", "Kệ C1", ""),
+ ("Efferalgan 150", "Paracetamol", 150, "gói", "UPSA", "Trẻ em", "Có", "", "Kệ C2", ""),
+ ("Panadol Extra", "Paracetamol + Caffein", "500 + 65", "viên", "GSK", "Người lớn", "Có", "", "Tủ kính", "có caffein"),
+ ("Brufen 400", "Ibuprofen", 400, "viên", "Abbott", "Người lớn", "Có", "", "Ngăn kéo 1", ""),
+ ("Ibuprofen 400 Stella", "Ibuprofen", 400, "viên", "Stella", "Người lớn", "Có", "", "Ngăn kéo 2", ""),
+ ("Brufen siro 100mg/5ml", "Ibuprofen", 100, "siro", "Abbott", "Trẻ em", "Có", "", "Kệ D1", "mg ghi theo 5 ml"),
+ ("Acemuc 200", "Acetylcystein", 200, "gói", "Sanofi", "Người lớn", "Có", "", "Kệ A1", ""),
+ ("Acemuc 100", "Acetylcystein", 100, "gói", "Sanofi", "Trẻ em", "Có", "", "Kệ A2", ""),
+ ("Mitux 200", "Acetylcystein", 200, "gói", "DHG", "Người lớn", "Có", "", "Kệ A3", ""),
+ ("Bisolvon 8", "Bromhexin", 8, "viên", "Boehringer", "Người lớn", "Có", "", "Kệ B1", ""),
+ ("Bromhexin 4 (siro 4mg/5ml)", "Bromhexin", 4, "siro", "Nadyphar", "Trẻ em", "Có", "", "Kệ B2", "mg ghi theo 5 ml"),
+ ("Mucosolvan 30", "Ambroxol", 30, "viên", "Boehringer", "Người lớn", "Có", "", "Kệ B3", ""),
+ ("Ambroxol 15 siro 15mg/5ml", "Ambroxol", 15, "siro", "Imexpharm", "Trẻ em", "Có", "", "Kệ C1", "mg ghi theo 5 ml"),
+ ("Dextromethorphan 15", "Dextromethorphan", 15, "viên", "Traphaco", "Người lớn", "Có", "", "Kệ C2", ""),
+ ("Prospan", "Cao khô lá thường xuân", "", "siro", "Engelhard", "Cả hai", "Có", "", "Tủ lạnh", "thảo dược, liều theo ml"),
+ ("Clarityne 10", "Loratadin", 10, "viên", "Bayer", "Cả hai", "Có", "", "Ngăn kéo 1", "không buồn ngủ"),
+ ("Loratadin 10 Stella", "Loratadin", 10, "viên", "Stella", "Cả hai", "Có", "", "Ngăn kéo 2", ""),
+ ("Loratadin siro 5mg/5ml", "Loratadin", 5, "siro", "Imexpharm", "Trẻ em", "Có", "", "Kệ D2", "mg ghi theo 5 ml"),
+ ("Zyrtec 10", "Cetirizin", 10, "viên", "UCB", "Người lớn", "Có", "", "Kệ A1", ""),
+ ("Cetirizin 10 Stella", "Cetirizin", 10, "viên", "Stella", "Người lớn", "Có", "", "Kệ A2", ""),
+ ("Chlorpheniramin 4", "Chlorpheniramin", 4, "viên", "Nadyphar", "Cả hai", "Có", "", "Kệ A3", "gây buồn ngủ"),
+ ("Telfast 60", "Fexofenadin", 60, "viên", "Sanofi", "Người lớn", "Có", "", "Kệ B1", ""),
+ ("Telfast 180", "Fexofenadin", 180, "viên", "Sanofi", "Người lớn", "Có", "", "Kệ B2", ""),
+ ("Alphachymotrypsin 4,2", "Alphachymotrypsin", 4.2, "viên", "Traphaco", "Người lớn", "Có", "", "Kệ B3", "ngậm dưới lưỡi"),
+ ("Strepsils", "Amylmetacresol + Dichlorobenzyl alcohol", "", "viên ngậm", "Reckitt", "Cả hai", "Có", "", "Kệ C1", "trên 6 tuổi"),
+ ("Betadine súc họng 1%", "Povidon iod", "", "chai", "Mundipharma", "Người lớn", "Có", "", "Kệ C2", ""),
+ ("Nước muối sinh lý 0,9%", "Natri clorid", "", "chai", "Nhiều hãng", "Cả hai", "Có", "", "Tủ kính", "nhỏ mũi, súc miệng"),
+ ("Otrivin 0,1%", "Xylometazolin", "", "chai xịt", "GSK", "Người lớn", "Có", "", "Ngăn kéo 1", "không quá 5 ngày"),
+ ("Otrivin 0,05%", "Xylometazolin", "", "chai xịt", "GSK", "Trẻ em", "Có", "", "Ngăn kéo 2", "trên 6 tuổi"),
+ ("Oresol", "Oresol", "", "gói", "Nhiều hãng", "Cả hai", "Có", "", "Kệ D3", "pha đúng lượng nước"),
+ ("Smecta", "Diosmectit", 3000, "gói", "Ipsen", "Cả hai", "Có", "", "Kệ A1", "gói 3 g"),
+ ("Hidrasec 10", "Racecadotril", 10, "gói", "Ferrer", "Trẻ em", "Có", "", "Kệ A2", ""),
+ ("Hidrasec 30", "Racecadotril", 30, "gói", "Ferrer", "Trẻ em", "Có", "", "Kệ A3", ""),
+ ("Hidrasec 100", "Racecadotril", 100, "viên", "Ferrer", "Người lớn", "Có", "", "Kệ B1", ""),
+ ("Loperamid 2", "Loperamid", 2, "viên", "Stella", "Người lớn", "Có", "", "Kệ B2", "không dùng trẻ dưới 12 tuổi"),
+ ("Enterogermina", "Bacillus clausii", "", "ống", "Sanofi", "Cả hai", "Có", "", "Kệ B3", "men vi sinh"),
+ ("Zinc 10", "Kẽm", 10, "viên", "DHG", "Cả hai", "Có", "", "Kệ C1", ""),
+ ("Domperidon 10", "Domperidon", 10, "viên", "Stella", "Người lớn", "Có", "", "Kệ C2", ""),
+ ("Omeprazol 20", "Omeprazol", 20, "viên", "Stella", "Người lớn", "Có", "", "Tủ kính", "uống trước ăn sáng"),
+ ("Phosphalugel", "Aluminium phosphat", "", "gói", "Sanofi", "Cả hai", "Có", "", "Ngăn kéo 1", ""),
+ ("Simethicon 80", "Simethicon", 80, "viên", "Traphaco", "Người lớn", "Có", "", "Ngăn kéo 2", ""),
+ ("Sorbitol 5g", "Sorbitol", 5000, "gói", "Sanofi", "Người lớn", "Có", "", "Kệ D1", ""),
+ ("Duphalac", "Lactulose", "", "gói", "Abbott", "Cả hai", "Có", "", "Kệ A1", "10 g/15 ml"),
+ ("Spasmaverine 40", "Alverin", 40, "viên", "Sanofi", "Người lớn", "Có", "", "Kệ A2", ""),
+ ("Dimenhydrinat 50", "Dimenhydrinat", 50, "viên", "Nadyphar", "Cả hai", "Có", "", "Kệ A3", ""),
+ ("Rotundin 30", "Rotundin", 30, "viên", "Traphaco", "Người lớn", "Có", "", "Kệ B1", ""),
+ ("Vitamin C 500", "Vitamin C", 500, "viên", "DHG", "Cả hai", "Có", "", "Kệ B2", ""),
+ ("Vitamin 3B", "Vitamin B1 + B6 + B12", "", "viên", "DHG", "Người lớn", "Có", "", "Kệ B3", ""),
+ ("Hydrocortison 1% kem", "Hydrocortison", "", "tuýp", "Nhiều hãng", "Cả hai", "Có", "", "Kệ C1", "bôi ngoài"),
+ ("Alaxan", "Ibuprofen + Paracetamol", "200 + 325", "viên", "United", "Người lớn", "Hết", "", "Kệ C2", "khách hay hỏi"),
+ ("Decolgen Forte", "Paracetamol + Phenylephrin + Chlorpheniramin", "500 + 10 + 2", "viên", "United", "Người lớn", "Có", "", "Tủ kính", "cảm cúm"),
+ ("Tiffy", "Paracetamol + Phenylephrin + Chlorpheniramin", "500 + 10 + 2", "viên", "Thai Nakorn", "Người lớn", "Hết", "", "Ngăn kéo 1", ""),
+ ("Augmentin 625", "Amoxicillin + Acid clavulanic", "500 + 125", "viên", "GSK", "Người lớn", "Có", "Có", "Ngăn kéo 2", "kháng sinh, phải có toa"),
 ]
 
 # ---------------------------------------------------------------- Triệu chứng
@@ -217,7 +217,7 @@ RULES = [
  ("Cảm cúm", TE, "Kháng dị ứng", "Loratadin", "", 5, 1, 5, "", "", "", 2),
 ]
 
-DRUG_HDR = ["Tên thuốc", "Hoạt chất", "mg", "Dạng", "Hãng", "Đối tượng", "Còn hàng", "Kê đơn", "Ghi chú"]
+DRUG_HDR = ["Tên thuốc", "Hoạt chất", "mg", "Dạng", "Hãng", "Đối tượng", "Còn hàng", "Kê đơn", "Vị trí", "Ghi chú"]
 RULE_HDR = ["Triệu chứng", "Đối tượng", "Nhóm", "Hoạt chất", "mg/kg/lần", "mg cố định/lần", "Lần/ngày", "Tối đa mg/ngày", "Liều ghi tay", "Cách uống", "Cảnh báo", "Ưu tiên"]
 SYM_HDR = ["Triệu chứng", "Nhóm hiển thị", "Thứ tự", "Khách hay nói"]
 FLAG_HDR = ["Dấu hiệu", "Đối tượng", "Làm gì"]
@@ -231,6 +231,7 @@ DRUG_NOTES = {
  "Đối tượng": "Người lớn / Trẻ em / Cả hai. App ưu tiên thuốc đúng đối tượng.",
  "Còn hàng": "Có / Hết. Để trống = Có. Thuốc khách hay hỏi mà quầy chưa nhập cũng nên ghi vào và đánh Hết, để app chỉ ra thuốc thay thế đang có.",
  "Kê đơn": "Ghi Có nếu là thuốc kê đơn (kháng sinh, corticoid...). App sẽ không tự gợi ý và nhắc hỏi dược sĩ.",
+ "Vị trí": "Chỗ để thuốc ở quầy, ghi đúng nhãn dán trên kệ: Kệ A3, Ngăn kéo 2, Tủ lạnh... App in dưới tên thuốc để nhân viên mới tìm được. Gõ mã kệ ở tab Tra thuốc sẽ ra hết thuốc kệ đó.",
 }
 RULE_NOTES = {
  "Triệu chứng": "Đúng tên trong sheet Triệu chứng (app tự thêm nếu chưa có).",
@@ -258,7 +259,7 @@ ZEBRA = PatternFill("solid", fgColor="F2F6F4")
 from openpyxl.formatting.rule import FormulaRule
 
 HINTS = {
- "Thuốc": ["↳ vd: Panadol", "Paracetamol", "500", "viên", "GSK", "Người lớn", "Có", "", "ghi chú tuỳ ý"],
+ "Thuốc": ["↳ vd: Panadol", "Paracetamol", "500", "viên", "GSK", "Người lớn", "Có", "", "Kệ A1", "ghi chú tuỳ ý"],
  "Luật cắt liều": ["↳ vd: Sốt", "Trẻ em", "Hạ sốt, giảm đau", "Paracetamol", "12,5", "(hoặc điền cột này)", "3-4", "60/kg", "(khi không tính mg)", "cách ≥ 4h", "Sốt quá 3 ngày → đi khám", "1"],
  "Triệu chứng": ["↳ vd: Sốt", "Toàn thân", "1", "nóng, hâm hấp, ớn lạnh"],
  "Dấu hiệu nguy hiểm": ["↳ vd: Khó thở", "Cả hai", "Đi khám ngay"],
@@ -319,6 +320,7 @@ def build_workbook():
      ("Cách thêm 1 bài cắt liều mới: (1) sheet Thuốc: bảo đảm thuốc và Hoạt chất có sẵn; (2) sheet Triệu chứng: thêm triệu chứng nếu chưa có; (3) sheet Luật: 1 dòng cho Người lớn, 1 dòng cho Trẻ em.", False),
      ("", False),
      ("Sheet Thuốc: mỗi dòng một thuốc. Cột Hoạt chất là chìa khoá để tab Tra thuốc tìm thuốc thay thế và để sheet Luật nối vào.", False),
+     ("Cột Vị trí: ghi đúng nhãn dán trên kệ (Kệ A3, Ngăn kéo 2, Tủ lạnh) để nhân viên mới tìm được thuốc. Nên dán nhãn kệ theo chữ+số rồi ghi y vậy.", False),
      ("Cột Còn hàng: Có / Hết. Thuốc khách hay hỏi mà quầy chưa nhập cũng ghi vào và đánh Hết → nhân viên tra được và app chỉ thuốc thay thế đang có. Cột Kê đơn: ghi Có với kháng sinh, corticoid... app sẽ không tự gợi ý.", False),
      ("Sheet Luật cắt liều: mỗi dòng = 1 triệu chứng + 1 đối tượng + 1 hoạt chất. Điền mg/kg/lần (app nhân số kg) HOẶC mg cố định/lần. Không tính theo mg thì viết vào Liều ghi tay.", False),
      ("Sheet Triệu chứng: xếp chip trên màn hình + cột 'Khách hay nói' để nhân viên gõ lời khách là ra chip đúng.", False),
@@ -333,7 +335,7 @@ def build_workbook():
         c = ws.cell(row=i, column=1, value=t)
         c.font = Font(bold=b, size=13 if i == 1 else 11)
         c.alignment = Alignment(wrap_text=True, vertical="top")
-    wsd = sheet(wb, "Thuốc", DRUG_HDR, DRUGS, DRUG_NOTES, [26, 30, 11, 11, 14, 12, 10, 8, 26])
+    wsd = sheet(wb, "Thuốc", DRUG_HDR, DRUGS, DRUG_NOTES, [26, 30, 11, 11, 14, 12, 10, 8, 14, 26])
     wsr = sheet(wb, "Luật cắt liều", RULE_HDR, RULES, RULE_NOTES, [22, 11, 20, 26, 10, 12, 9, 12, 44, 24, 40, 8])
     sheet(wb, "Triệu chứng", SYM_HDR, SYMPTOMS, {"Khách hay nói": "Các cách khách hay gọi, cách nhau bằng dấu phẩy. Nhân viên gõ vào ô tìm là ra chip đúng."}, [26, 16, 8, 60])
     wsf = sheet(wb, "Dấu hiệu nguy hiểm", FLAG_HDR, RED_FLAGS, {"Dấu hiệu": "Nhân viên hỏi khách trước khi cắt. Chấm 1 dấu hiệu là app KHÔNG ra thuốc, chỉ hiện Làm gì."}, [50, 12, 44])
@@ -370,7 +372,7 @@ def to_json():
         return "" if v is None else v
     return {
         "source": "sample",
-        "drugs": [dict(zip(["name", "active", "mg", "form", "brand", "audience", "inStock", "rx", "note"], map(clean, r))) for r in DRUGS],
+        "drugs": [dict(zip(["name", "active", "mg", "form", "brand", "audience", "inStock", "rx", "location", "note"], map(clean, r))) for r in DRUGS],
         "rules": [dict(zip(["symptom", "audience", "group", "active", "mgPerKg", "mgFixed", "timesPerDay", "maxPerDay", "freeText", "howTo", "warning", "priority"], map(clean, r))) for r in RULES],
         "symptoms": [dict(zip(["name", "group", "order", "synonyms"], map(clean, r))) for r in SYMPTOMS],
         "redFlags": [dict(zip(["text", "audience", "action"], map(clean, r))) for r in RED_FLAGS],

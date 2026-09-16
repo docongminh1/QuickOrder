@@ -48,6 +48,8 @@ export function auditDataSet(ds: DataSet): AuditItem[] {
   const ruleActs = new Set(ds.rules.map((r) => norm(r.active)));
   const unused = ds.drugs.filter((d) => !ruleActs.has(norm(d.active)) && d.inStock && !d.rx).map((d) => d.name);
   if (unused.length) out.push({ level: 'info', text: `Thuốc còn hàng nhưng chưa có bài nào dùng (chỉ tra được, không tự gợi ý): ${unused.slice(0, 8).join(', ')}${unused.length > 8 ? ` +${unused.length - 8}` : ''}.` });
+  const noLoc = ds.drugs.filter((d) => d.inStock && !d.location).map((d) => d.name);
+  if (noLoc.length) out.push({ level: 'info', text: `Chưa ghi Vị trí kệ cho ${noLoc.length} thuốc còn hàng: ${noLoc.slice(0, 8).join(', ')}${noLoc.length > 8 ? ` +${noLoc.length - 8}` : ''}. Nhân viên mới sẽ không biết lấy ở đâu.` });
   // triệu chứng không có từ khách hay nói
   const noSyn = ds.symptoms.filter((s) => s.synonyms.length === 0).map((s) => s.name);
   if (noSyn.length) out.push({ level: 'info', text: `Chưa có cột "Khách hay nói" cho: ${noSyn.slice(0, 8).join(', ')}${noSyn.length > 8 ? ` +${noSyn.length - 8}` : ''}. Nhân viên chỉ tìm được theo tên chip.` });
