@@ -13,6 +13,16 @@ def sh(*a, timeout=30):
 def tap(x, y, wait=0.6): sh('shell', 'input', 'tap', str(int(x)), str(int(y))); time.sleep(wait)
 def swipe(y1, y2, wait=0.8): sh('shell', 'input', 'swipe', '540', str(y1), '540', str(y2), '250'); time.sleep(wait)
 def type_text(t, wait=0.6): sh('shell', 'input', 'text', t.replace(' ', '%s')); time.sleep(wait)
+def type_into(field_pred, text, wait=0.8, tries=3):
+    """Gõ vào ô rồi SOÁT lại chữ trên màn (máy ảo quá tải hay nuốt/đúp phím: "khan tieng" → "khhan tien").
+    Sai thì bấm ✕ xoá, bấm lại ô, gõ lại. Trả True nếu chữ trên màn đúng chữ đã gõ."""
+    for k in range(tries):
+        type_text(text, wait)
+        if find(dump(), lambda t: norm(t) == norm(text)): return True
+        x = find(dump(), exact('✕'))
+        if x: tap(x[0], x[1], 0.5)
+        if not tap_text(field_pred, scroll=(k > 0)): return False
+    return False
 def norm(s):
     s = unicodedata.normalize('NFD', s); s = ''.join(c for c in s if unicodedata.category(c) != 'Mn')
     return s.replace('đ', 'd').replace('Đ', 'D').lower().strip()
@@ -120,7 +130,7 @@ def run_dose(c):
     # 4. triệu chứng qua ô tìm
     for sym, typed in zip(c['symptoms'], c['typed']):
         if not tap_text(starts('Gõ lời khách nói'), scroll=True): return False, 'không thấy ô tìm triệu chứng'
-        type_text(typed, 0.8)
+        if not type_into(starts('Gõ lời khách nói'), typed): return False, f'máy ảo gõ sai chữ "{typed}" (3 lần)'
         hide_kb()
         if not tap_text(exact(sym), scroll=True, tries=3):
             return False, f'không thấy chip "{sym}" sau khi gõ "{typed}"'
@@ -165,7 +175,8 @@ def run_lookup(c):
     x = find(nodes, exact('✕'))
     if x: tap(x[0], x[1])
     if not tap_text(starts('Gõ tên thuốc'), scroll=False): return False, 'không thấy ô tra'
-    type_text(norm(c['query']), 1.0); hide_kb()
+    if not type_into(starts('Gõ tên thuốc'), norm(c['query']), 1.0): return False, f'máy ảo gõ sai chữ "{norm(c["query"])}" (3 lần)'
+    hide_kb()
     texts = [n[0] for n in dump()]
     e = c['expect']
     if e.get('none'):

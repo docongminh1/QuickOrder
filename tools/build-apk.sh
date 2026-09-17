@@ -40,5 +40,9 @@ APK=android/app/build/outputs/apk/release/app-release.apk
 ls -la "$APK"
 mkdir -p dist
 VER=$(python3 -c "import json;print(json.load(open('app.json'))['expo']['version'])")
+# soát manifest thật của APK phải khớp app.json (không tin tên file)
+AAPT=$(ls -d "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)
+GOT=$("$AAPT" dump badging "$APK" | grep -o "versionName='[^']*'" | cut -d"'" -f2)
+if [ "$GOT" != "$VER" ]; then echo "!! APK mang versionName $GOT, app.json là $VER — không copy"; exit 1; fi
 cp "$APK" "dist/CatLieuNhanh-v$VER.apk"
-echo "== DONE dist/CatLieuNhanh-v$VER.apk"
+echo "== DONE dist/CatLieuNhanh-v$VER.apk (manifest $GOT)"
