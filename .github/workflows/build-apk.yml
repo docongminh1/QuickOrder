@@ -3,7 +3,7 @@ name: Build APK → Drive
 on:
   push:
     branches: [main]
-    paths-ignore: ["**.md"]
+    paths-ignore: ["**.md", "tools/add_from_photo.py"]
   workflow_dispatch:
 
 concurrency:
