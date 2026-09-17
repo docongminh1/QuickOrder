@@ -49,3 +49,15 @@ App báo bao nhiêu dòng nạp được và dòng nào lỗi vì sao; dòng l�
 - Dữ liệu mẫu trong file là ví dụ theo liều OTC thông dụng, dược sĩ kiểm lại trước khi dùng thật.
 - App không lưu khách, không cần mạng, không gửi dữ liệu đi đâu.
 - Muốn đổi dữ liệu thì nạp Excel mới, không cần cài lại app.
+
+## Lịch sử phiên bản
+- **1.0.9** (17/09) — Ô Cân luôn nhận được chạm; chấm chip / Xem thuốc / Khách mới tự cất bàn phím.
+- **1.0.8** (17/09) — **Sửa an toàn liều**: sau khi làm tròn, app kiểm lại tối đa/ngày và độ lệch so với liều tính (0,66–1,25). Không an toàn → thẻ gạch liều + khung đỏ **KHÔNG TỰ CẮT**, không in tổng. Chọn thuốc cùng hoạt chất có mức cắt an toàn trước. Đọc Excel lỏng hơn: "500mg", "3 lần/ngày", "60 mg/kg", "3g" đều hiểu. Báo khi thiếu cột tiêu đề. Soát dữ liệu thêm: tên thuốc trùng, mg có chữ, luật thiếu số lần.
+- **1.0.7** (17/09) — Bộ kiểm kỹ cho đọc ảnh; tách hàm xuất Excel.
+- **1.0.6** (17/09) — Đọc ảnh bằng Claude: Chụp kệ → cập nhật vị trí (dược sĩ tick từng dòng); Đọc toa → chỉ chỗ lấy. Khoá Claude dán ở tab Dữ liệu.
+- **1.0.5** (16/09) — Cột Vị trí kệ, 📍 trên thẻ thuốc và Tra thuốc, gõ mã kệ ra thuốc kệ đó.
+- **1.0.4** (14/09) — Khoá kết quả cho tới khi trả lời bước 2 (tình trạng) và bước 3 (dấu hiệu nguy hiểm); Soát dữ liệu cho dược sĩ; Excel có ô thả xuống, dòng ví dụ, tô đỏ ô bắt buộc trống.
+- **1.0.3** (14/09) — Bước 2 tình trạng đặc biệt, bước 3 dấu hiệu nguy hiểm chặn thuốc, tìm chip theo lời khách nói, nút Khách mới, gợi ý khi gõ sai tên thuốc.
+- **1.0.2** (14/09) — Gom món phụ khi nhiều thẻ; báo "gọi dược sĩ" khi trẻ em chưa có luật.
+- **1.0.1** (14/09) — Cột Còn hàng / Kê đơn; chọn số ngày + tổng số gói; nhắc nhập kg.
+- **1.0.0** (11/09) — Bản đầu: 3 tab Cắt liều, Tra thuốc, Dữ liệu; nạp Excel 3 sheet.
