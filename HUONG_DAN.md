@@ -1,7 +1,7 @@
 # Cắt Liều Nhanh · hướng dẫn nhanh
 
 ## Cài trên Android
-1. Chép file `CatLieuNhanh-v1.0.8.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
+1. Chép file `CatLieuNhanh-v1.0.9.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
 2. Bấm vào file, Android hỏi "Cho phép cài ứng dụng từ nguồn này" → Cho phép → Cài đặt.
 3. Mở app. Lúc đầu app đã có sẵn bộ dữ liệu mẫu (59 thuốc, 81 dòng luật, 26 triệu chứng) để bấm thử ngay.
 

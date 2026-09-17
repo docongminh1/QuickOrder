@@ -92,7 +92,18 @@ def run_dose(c):
     if c['audience'] == 'Trẻ em':
         if not tap_text(exact('Trẻ em'), scroll=False): return False, 'không thấy nút Trẻ em'
         if c['kg'] is not None:
-            time.sleep(0.4); type_text(str(c['kg']))
+            time.sleep(1.0); type_text(str(c['kg']))
+            # số kg phải nằm TRONG ô Cân (cùng dòng với nhãn "Cân"); lạc vào ô tìm thì xoá và gõ lại vào đúng ô
+            def kg_ok():
+                nodes = dump(); lab = find(nodes, exact('Cân')); val = find(nodes, exact(str(c['kg'])))
+                return bool(lab and val and abs(val[1] - lab[1]) < 60)
+            for _ in range(2):
+                if kg_ok(): break
+                x = find(dump(), exact('✕'))
+                if x: tap(x[0], x[1], 0.4)
+                lab = find(dump(), exact('Cân'))
+                if lab: tap(lab[0] + 120, lab[1], 0.6); type_text(str(c['kg']))
+            if not kg_ok(): return False, 'không gõ được số kg vào ô Cân'
         hide_kb()
     # 2. tình trạng
     if c['cond']:

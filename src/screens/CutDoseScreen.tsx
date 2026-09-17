@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { computeDoses, type DoseItem } from '../engine/dosing';
 import { norm } from '../engine/normalize';
@@ -78,6 +78,7 @@ export default function CutDoseScreen() {
   const toggleIn = (setter: React.Dispatch<React.SetStateAction<string[]>>, v: string) =>
     setter((cur) => (cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]));
   const newCustomer = () => {
+    Keyboard.dismiss();
     setSelected([]); setKgText(''); setAudience('Người lớn'); setDays('3'); setConds([]); setCondsDone(false); setFlags([]); setFlagsDone(false); setQuery(''); setShowExtra(false); setShowFlags(false);
     scrollRef.current?.scrollTo({ y: 0, animated: true });
   };
@@ -86,7 +87,7 @@ export default function CutDoseScreen() {
     if (a === 'Người lớn') setKgText('');
     else {
       setConds((cur) => cur.filter((c) => c !== 'preg' && c !== 'old')); // chip này ẩn với trẻ em, đừng để nó âm thầm bật
-      setTimeout(() => kgRef.current?.focus(), 50);
+      setTimeout(() => kgRef.current?.focus(), 150);
     }
   };
   const hasInput = selected.length > 0 || conds.length > 0 || flags.length > 0 || kgText !== '' || audience !== 'Người lớn' || condsDone || flagsDone;
@@ -99,7 +100,7 @@ export default function CutDoseScreen() {
         <Text style={s.title}>Cắt liều</Text>
         <View style={s.topBtns}>
           {selected.length > 0 && activeFlags.length === 0 && gateOpen && (
-            <Pressable onPress={() => scrollRef.current?.scrollTo({ y: Math.max(0, resultY.current - 8), animated: true })} style={s.jump}>
+            <Pressable onPress={() => { Keyboard.dismiss(); scrollRef.current?.scrollTo({ y: Math.max(0, resultY.current - 8), animated: true }); }} style={s.jump}>
               <Text style={s.jumpText}>↓ Xem thuốc ({result.items.length})</Text>
             </Pressable>
           )}
@@ -119,7 +120,7 @@ export default function CutDoseScreen() {
           </View>
           <View style={[s.kgBox, !isChild && { opacity: 0.45 }, isChild && kg === null && s.kgBoxNeed]}>
             <Text style={s.kgLabel}>Cân</Text>
-            <TextInput ref={kgRef} value={kgText} onChangeText={setKgText} keyboardType="decimal-pad" placeholder="— kg" placeholderTextColor={C.muted} style={s.kgInput} editable={isChild} />
+            <TextInput ref={kgRef} value={kgText} onChangeText={setKgText} keyboardType="decimal-pad" placeholder="— kg" placeholderTextColor={C.muted} style={s.kgInput} onFocus={() => { if (!isChild) setAudience('Trẻ em'); }} />
             {kgText ? <Text style={s.kgUnit}>kg</Text> : null}
           </View>
         </View>
@@ -174,7 +175,7 @@ export default function CutDoseScreen() {
             <Text style={s.groupName}>{g}</Text>
             <View style={s.chips}>
               {names.map((n) => (
-                <Chip key={n} text={n} on={selected.some((x) => norm(x) === norm(n))} onPress={() => { toggle(n); if (query) setQuery(''); }} />
+                <Chip key={n} text={n} on={selected.some((x) => norm(x) === norm(n))} onPress={() => { toggle(n); if (query) setQuery(''); Keyboard.dismiss(); }} />
               ))}
             </View>
           </View>
