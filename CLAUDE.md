@@ -33,6 +33,7 @@ npx tsx tools/sim-500.ts          # 500 khách ngẫu nhiên
 npx tsx tools/sim-novice.ts       # lời khách nói → chip, gõ sai tên thuốc
 npx tsx tools/audit-test.ts       # soát dữ liệu file mẫu
 npx tsx tools/test-vision.ts      # khớp kết quả đọc ảnh (giả lập, không gọi mạng)
+npx tsx tools/test-vision-deep.ts # 20 ca khớp tên + áp dụng → xuất Excel → nạp lại + SDK qua fetch giả (từ chối, 401, JSON hỏng)
 ```
 
 ## Phát hành

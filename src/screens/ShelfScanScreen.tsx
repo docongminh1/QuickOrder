@@ -47,7 +47,7 @@ export default function ShelfScanScreen({ visible, onClose }: { visible: boolean
   const apply = async () => {
     if (!props) return;
     const r = applyShelfProposals(data, props, { rxCabinet });
-    await replace({ ...r.ds, source: 'import', importedAt: new Date().toISOString(), fileName: (data.fileName ?? 'dữ liệu') + ' + ảnh kệ' });
+    await replace({ ...r.ds, source: 'import', importedAt: new Date().toISOString(), fileName: (data.fileName ?? 'dữ liệu').replace(/ \+ ảnh kệ$/, '') + ' + ảnh kệ' });
     RNAlert.alert('Đã cập nhật', `${r.updated} thuốc đổi vị trí, ${r.added} thuốc mới.\n\nNhớ bấm "Xuất dữ liệu đang dùng ra Excel" để giữ bản mới, lần sau nạp Excel cũ sẽ mất.`, [{ text: 'OK', onPress: () => { setProps(null); onClose(); } }]);
   };
 
