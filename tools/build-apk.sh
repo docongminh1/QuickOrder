@@ -7,12 +7,16 @@ export ANDROID_HOME="$HOME/Library/Android/sdk"
 export ANDROID_SDK_ROOT="$ANDROID_HOME"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
 
-if [ ! -d android ]; then
+if [ ! -d android ] || [ "${1:-}" = "--prebuild" ]; then
   echo "== prebuild android"
   npx expo prebuild --platform android --no-install
 fi
 
 KS=android/app/catlieunhanh-release.keystore
+mkdir -p .secrets
+if [ ! -f "$KS" ] && [ -f .secrets/catlieunhanh-release.keystore ]; then
+  cp .secrets/catlieunhanh-release.keystore "$KS"; cp .secrets/keystore.properties android/keystore.properties
+fi
 if [ ! -f "$KS" ]; then
   echo "== tạo keystore"
   PASS=$(openssl rand -hex 12)
@@ -25,33 +29,9 @@ keyAlias=catlieunhanh
 keyPassword=$PASS
 EOP
 fi
+cp "$KS" .secrets/ 2>/dev/null; cp android/keystore.properties .secrets/ 2>/dev/null
 
-# nối signing release vào build.gradle (1 lần)
-if ! grep -q "keystore.properties" android/app/build.gradle; then
-  echo "== patch build.gradle"
-  python3 - <<'PY'
-p='android/app/build.gradle'; s=open(p).read()
-s=s.replace("android {", """def ksProps = new Properties()
-def ksFile = rootProject.file('keystore.properties')
-if (ksFile.exists()) { ksProps.load(new FileInputStream(ksFile)) }
-
-android {""",1)
-s=s.replace("""    signingConfigs {
-        debug {""","""    signingConfigs {
-        release {
-            if (ksFile.exists()) {
-                storeFile file(ksProps['storeFile'])
-                storePassword ksProps['storePassword']
-                keyAlias ksProps['keyAlias']
-                keyPassword ksProps['keyPassword']
-            }
-        }
-        debug {""",1)
-import re
-s=re.sub(r"(release \{[^}]*?)signingConfig signingConfigs\.debug", r"\1signingConfig ksFile.exists() ? signingConfigs.release : signingConfigs.debug", s, count=1, flags=re.S)
-open(p,'w').write(s); print('gradle patched')
-PY
-fi
+python3 tools/patch-android.py
 
 echo "== gradle assembleRelease"
 cd android && ./gradlew assembleRelease --no-daemon -q

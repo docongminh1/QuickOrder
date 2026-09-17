@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Alert as RNAlert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert as RNAlert, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
@@ -7,6 +7,8 @@ import * as Sharing from 'expo-sharing';
 import { read as xlsxRead, utils as xlsxUtils, write as xlsxWrite } from 'xlsx';
 import { parseWorkbook } from '../engine/parse';
 import { auditDataSet } from '../engine/audit';
+import { getApiKey, maskKey, setApiKey } from '../store/apiKey';
+import ShelfScanScreen from './ShelfScanScreen';
 import type { DataSet } from '../engine/types';
 import { TEMPLATE_BASE64 } from '../data/templateBase64';
 import { useData } from '../store/DataContext';
@@ -51,6 +53,16 @@ export default function DataScreen() {
   const [busy, setBusy] = useState(false);
   const [lastMsg, setLastMsg] = useState<string | null>(null);
   const [showAudit, setShowAudit] = useState(false);
+  const [scanOpen, setScanOpen] = useState(false);
+  const [keyMasked, setKeyMasked] = useState<string | null>(null);
+  const [keyInput, setKeyInput] = useState('');
+  const [keyEdit, setKeyEdit] = useState(false);
+  useEffect(() => { getApiKey().then((k) => setKeyMasked(k ? maskKey(k) : null)); }, []);
+  const saveKey = async () => {
+    const v = keyInput.trim();
+    if (v && !v.startsWith('sk-ant-')) { RNAlert.alert('Khoá không đúng dạng', 'Khoá Claude bắt đầu bằng "sk-ant-". Lấy tại console.anthropic.com → API Keys.'); return; }
+    await setApiKey(v); setKeyMasked(v ? maskKey(v) : null); setKeyInput(''); setKeyEdit(false);
+  };
   const audit = auditDataSet(data);
   const auditWarn = audit.filter((a) => a.level === 'warn').length;
 
@@ -125,6 +137,28 @@ export default function DataScreen() {
           </>
         )}
 
+        <Label>Đọc ảnh bằng Claude</Label>
+        <Card style={{ gap: 10 }}>
+          <Text style={s.help}>Chụp kệ để app tự đọc tên hộp và ghi vị trí; chụp toa khách đưa để chỉ chỗ lấy (ở tab Tra thuốc). Cần mạng và một khoá Claude của quầy, tốn vài trăm đồng mỗi tấm.</Text>
+          {keyMasked && !keyEdit ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={{ color: C.ink2 }}>Khoá Claude: <Text style={{ fontWeight: '700', color: C.ink }}>{keyMasked}</Text></Text>
+              <Pressable onPress={() => setKeyEdit(true)}><Text style={{ color: C.accent, fontWeight: '600' }}>Đổi</Text></Pressable>
+            </View>
+          ) : (
+            <View style={{ gap: 8 }}>
+              <TextInput value={keyInput} onChangeText={setKeyInput} placeholder="Dán khoá sk-ant-… vào đây" placeholderTextColor={C.muted} style={s.keyInput} autoCapitalize="none" autoCorrect={false} secureTextEntry />
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <View style={{ flex: 1 }}><Button title="Lưu khoá" onPress={saveKey} disabled={!keyInput.trim() && !keyMasked} /></View>
+                {keyMasked ? <View style={{ flex: 1 }}><Button title="Xoá khoá" onPress={() => { setKeyInput(''); setApiKey('').then(() => { setKeyMasked(null); setKeyEdit(false); }); }} ghost /></View> : null}
+              </View>
+              <Text style={s.foot}>Khoá lưu trong vùng bảo mật của máy, không nằm trong Excel, không gửi đi đâu ngoài Anthropic. Tạo tại console.anthropic.com.</Text>
+            </View>
+          )}
+          <Button title="📷  Chụp kệ → cập nhật vị trí" onPress={() => setScanOpen(true)} disabled={!keyMasked} />
+        </Card>
+        <ShelfScanScreen visible={scanOpen} onClose={() => setScanOpen(false)} />
+
         <Label>File mẫu</Label>
         <Card style={{ gap: 10 }}>
           <Text style={s.help}>File Excel có 4 sheet: Thuốc (kèm Còn hàng, Kê đơn), Luật cắt liều, Triệu chứng (kèm Khách hay nói), Dấu hiệu nguy hiểm, và sheet Hướng dẫn. Sửa theo quầy mình rồi nạp lại.</Text>
@@ -166,6 +200,7 @@ const s = StyleSheet.create({
   statL: { fontSize: 12.5, color: C.muted },
   more: { fontSize: 13, color: C.muted, textAlign: 'center' },
   help: { fontSize: 14, color: C.ink2, lineHeight: 20 },
+  keyInput: { backgroundColor: C.bg, borderWidth: 1, borderColor: C.line, borderRadius: R.sm, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: C.ink },
   reset: { color: C.danger, textAlign: 'center', paddingVertical: 8, fontWeight: '600' },
   foot: { fontSize: 12, color: C.muted, textAlign: 'center', marginTop: 4 },
 });

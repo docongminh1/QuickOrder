@@ -19,6 +19,11 @@ App Android (Expo SDK 57, React Native, TypeScript) cho quầy thuốc: nhân vi
 - Excel 4 sheet: Thuốc (Còn hàng, Kê đơn) · Luật cắt liều (mg/kg/lần HOẶC mg cố định HOẶC Liều ghi tay) · Triệu chứng (Khách hay nói)
   · Dấu hiệu nguy hiểm. Dòng bắt đầu bằng `↳` là ví dụ, parser bỏ qua.
 
+## Đọc ảnh bằng Claude (`src/engine/vision.ts`)
+- SDK `@anthropic-ai/sdk`, model `claude-opus-5`, `messages.parse` + `zodOutputFormat`. Khoá do dược sĩ dán vào app, lưu `expo-secure-store`; KHÔNG nhúng khoá vào code hay Excel.
+- Ảnh chỉ dùng để trả lời "thuốc nằm đâu" (kệ) và "toa ghi gì" (toa). KHÔNG bao giờ để AI quyết liều: liều luôn từ sheet Luật.
+- Phần khớp tên/áp dụng (`matchDrug`, `proposeFromShelf`, `applyShelfProposals`, `proposeFromPrescription`) thuần TS, test offline `npx tsx tools/test-vision.ts`.
+
 ## Test trước khi đẩy code
 ```bash
 npx tsc --noEmit -p .
@@ -27,6 +32,7 @@ npx tsx tools/test-roles.ts       # vai dược sĩ sửa Excel có lỗi + vai 
 npx tsx tools/sim-500.ts          # 500 khách ngẫu nhiên
 npx tsx tools/sim-novice.ts       # lời khách nói → chip, gõ sai tên thuốc
 npx tsx tools/audit-test.ts       # soát dữ liệu file mẫu
+npx tsx tools/test-vision.ts      # khớp kết quả đọc ảnh (giả lập, không gọi mạng)
 ```
 
 ## Phát hành

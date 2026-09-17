@@ -5,6 +5,7 @@ import { lookup, searchDrugs, suggestDrugs } from '../engine/lookup';
 import type { Drug } from '../engine/types';
 import { useData } from '../store/DataContext';
 import { Alert, Card, Empty, Label } from '../ui/bits';
+import PrescriptionScanScreen from './PrescriptionScanScreen';
 import { C, R } from '../ui/theme';
 
 export default function LookupScreen() {
@@ -12,6 +13,7 @@ export default function LookupScreen() {
   const insets = useSafeAreaInsets();
   const [q, setQ] = useState('');
   const [picked, setPicked] = useState<Drug | null>(null);
+  const [rxOpen, setRxOpen] = useState(false);
 
   const matches = useMemo(() => searchDrugs(data, q), [data, q]);
   const suggestions = useMemo(() => (q && matches.length === 0 ? suggestDrugs(data, q) : []), [data, q, matches.length]);
@@ -21,7 +23,11 @@ export default function LookupScreen() {
 
   return (
     <View style={[s.root, { paddingTop: insets.top }]}>
-      <View style={s.top}><Text style={s.title}>Tra thuốc</Text></View>
+      <View style={[s.top, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+        <Text style={s.title}>Tra thuốc</Text>
+        <Pressable onPress={() => setRxOpen(true)} style={s.rxBtn}><Text style={s.rxBtnText}>📷 Đọc toa</Text></Pressable>
+      </View>
+      <PrescriptionScanScreen visible={rxOpen} onClose={() => setRxOpen(false)} />
       <ScrollView contentContainerStyle={s.body} keyboardShouldPersistTaps="handled">
         <View style={s.search}>
           <TextInput
@@ -142,6 +148,8 @@ const s = StyleSheet.create({
   rowSub: { fontSize: 12.5, color: C.muted, marginTop: 1 },
   rowMg: { fontSize: 14, color: C.ink2, fontVariant: ['tabular-nums'] },
   rowLoc: { fontSize: 12, color: C.warn, fontWeight: '700' },
+  rxBtn: { borderWidth: 1.5, borderColor: C.accent, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 },
+  rxBtnText: { color: C.accent, fontWeight: '700', fontSize: 13 },
   heroLoc: { fontSize: 15, color: C.warn, fontWeight: '800', marginTop: 4 },
   badges: { flexDirection: 'row', gap: 6, marginTop: 6, flexWrap: 'wrap' },
   badge: { borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 },

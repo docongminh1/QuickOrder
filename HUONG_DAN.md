@@ -1,7 +1,7 @@
 # Cắt Liều Nhanh · hướng dẫn nhanh
 
 ## Cài trên Android
-1. Chép file `CatLieuNhanh-v1.0.5.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
+1. Chép file `CatLieuNhanh-v1.0.6.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
 2. Bấm vào file, Android hỏi "Cho phép cài ứng dụng từ nguồn này" → Cho phép → Cài đặt.
 3. Mở app. Lúc đầu app đã có sẵn bộ dữ liệu mẫu (59 thuốc, 81 dòng luật, 26 triệu chứng) để bấm thử ngay.
 
@@ -16,6 +16,13 @@
 - **Cắt liều**: chọn Người lớn / Trẻ em, gõ số kg (trẻ em), chấm triệu chứng, chọn cắt cho mấy ngày → danh sách thuốc, hàm lượng, số gói/viên mỗi lần, số lần/ngày và **tổng số gói/viên cần cắt**. Dòng xanh nhỏ là phép tính để kiểm lại. Quên nhập kg thì app nhắc đỏ.
 - **Tra thuốc**: gõ tên thuốc (vd Panadol) → hoạt chất + các thuốc cùng hoạt chất, chia cùng mg / khác mg / có thêm chất khác. Thuốc đánh **Hết** trong Excel hiện nhãn đỏ và app gợi câu trả lời khách kèm thuốc thay. Thuốc **Kê đơn** hiện nhãn đỏ, không tự gợi ý ở tab Cắt liều.
 - **Dữ liệu**: nạp file Excel của bạn, tải file mẫu, xuất dữ liệu đang dùng, về lại mẫu.
+
+## Đọc ảnh bằng Claude (tuỳ chọn, cần mạng)
+Hai việc app có thể đọc từ ảnh, đều phải người xác nhận trước khi dùng:
+- **Chụp kệ → cập nhật vị trí** (tab Dữ liệu): ghi tên kệ, chụp một tấm thẳng đủ sáng. App liệt kê từng hộp đọc được, khớp với thuốc trong Excel, đề nghị vị trí "Kệ 1 · hàng 2 · trái". Dược sĩ chấm ✓ dòng đúng, sửa chữ vị trí nếu cần, bấm Lưu. Dòng "độ chắc thấp" mặc định bỏ qua. Lưu xong nhớ **Xuất dữ liệu đang dùng ra Excel** để giữ bản mới.
+- **Đọc toa / hộp thuốc khách đưa** (nút 📷 ở tab Tra thuốc): app đọc tên và số lượng ghi trên toa, chỉ chỗ lấy, báo hết hàng hoặc kê đơn. KHÔNG tự tính liều. Hỏi lại khách "đúng thuốc này không?" trước khi lấy.
+
+Cần một **khoá Claude** của quầy: tạo tại console.anthropic.com → API Keys, dán vào tab Dữ liệu → "Khoá Claude". Khoá nằm trong vùng bảo mật của máy. Mỗi tấm ảnh tốn vài trăm đồng, trả cho Anthropic theo lượng dùng.
 
 ## Điền file Excel (dành cho dược sĩ)
 - Ô có mũi tên thả xuống (Triệu chứng, Hoạt chất, Đối tượng, Dạng, Còn hàng) → **chọn**, đừng gõ, để khỏi sai chính tả. Hoạt chất trong sheet Luật lấy thẳng từ sheet Thuốc.

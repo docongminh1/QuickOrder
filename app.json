@@ -2,7 +2,7 @@
   "expo": {
     "name": "Cắt Liều Nhanh",
     "slug": "cat-lieu-nhanh",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,13 +19,23 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.basebs.catlieunhanh",
-      "versionCode": 6
+      "versionCode": 7,
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-sharing"
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Cắt Liều Nhanh dùng máy ảnh để chụp kệ thuốc và toa thuốc.",
+          "photosPermission": "Cắt Liều Nhanh cần chọn ảnh kệ thuốc hoặc toa thuốc."
+        }
+      ],
+      "expo-secure-store"
     ],
     "splash": {
       "image": "./assets/splash-icon.png",
