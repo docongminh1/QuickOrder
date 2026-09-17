@@ -10,6 +10,7 @@ App Android (Expo SDK 57, React Native, TypeScript) cho quầy thuốc: nhân vi
   → 4 chấm triệu chứng (tìm theo "Khách hay nói") → 5 kết quả (số gói/viên mỗi lần, tổng theo ngày) → "Khách mới".
   Chưa trả lời bước 2 và 3 thì không hiện thuốc. Giữ nguyên hành vi này khi sửa.
 - Màu đỏ = dừng tay, gọi dược sĩ. Đừng làm mềm các câu chặn.
+- Liều sau làm tròn phải qua kiểm an toàn (`doseFor`: không vượt tối đa/ngày, tỷ lệ so liều tính trong [0.66, 1.25]); không an toàn → `caution`, không in tổng. Bài học 2026-09-17: bé 5 kg từng nhận ¼ viên = gấp đôi liều mà không ai báo.
 
 ## Cấu trúc
 - `src/engine/` — parse Excel (`parse.ts`), tính liều (`dosing.ts`), tra thuốc (`lookup.ts`), soát dữ liệu (`audit.ts`). Thuần TS, test được bằng `npx tsx`.
@@ -33,6 +34,7 @@ npx tsx tools/sim-500.ts          # 500 khách ngẫu nhiên
 npx tsx tools/sim-novice.ts       # lời khách nói → chip, gõ sai tên thuốc
 npx tsx tools/audit-test.ts       # soát dữ liệu file mẫu
 npx tsx tools/test-vision.ts      # khớp kết quả đọc ảnh (giả lập, không gọi mạng)
+npx tsx tools/fuzz-engine.ts      # 4000 lượt ngẫu nhiên, bất biến ĐỘC LẬP với engine (không vượt tối đa/ngày, làm tròn lệch ≤ 25–34%, không rx/hết hàng)
 npx tsx tools/test-vision-deep.ts # 20 ca khớp tên + áp dụng → xuất Excel → nạp lại + SDK qua fetch giả (từ chối, 401, JSON hỏng)
 ```
 

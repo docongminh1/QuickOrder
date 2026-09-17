@@ -41,7 +41,7 @@ function audienceOf(v: unknown): DrugAudience | null {
   const n = norm(v);
   if (n === 'nguoi lon' || n === 'nl' || n === 'adult') return 'Người lớn';
   if (n === 'tre em' || n === 'te' || n === 'child') return 'Trẻ em';
-  if (n === 'ca hai' || n === '' || n === 'both') return 'Cả hai';
+  if (n === 'ca hai' || n === 'ca 2' || n === 'ca2' || n === 'chung' || n === '' || n === 'both') return 'Cả hai';
   return null;
 }
 
@@ -73,7 +73,8 @@ export function buildDataSet(
     const stockTxt = norm(r.inStock);
     const inStock = !(stockTxt === 'het' || stockTxt === 'khong' || stockTxt === 'chua co' || stockTxt === 'chua nhap' || stockTxt === '0' || stockTxt === 'no');
     const rxTxt = norm(r.rx);
-    const rx = rxTxt === 'co' || rxTxt === 'x' || rxTxt === 'yes' || rxTxt === '1' || rxTxt === 'true' || norm(note).includes('ke don');
+    const noteSaysRx = norm(note).split(/[,;·|-]/).map((x) => x.trim()).some((x) => x.startsWith('ke don') || x === 'thuoc ke don' || x === 'can toa' || x === 'phai co toa');
+    const rx = rxTxt === 'co' || rxTxt === 'x' || rxTxt === 'yes' || rxTxt === '1' || rxTxt === 'true' || noteSaysRx;
     drugs.push({
       name, active, actives, isCombo: actives.length > 1,
       mg: actives.length > 1 ? null : num(r.mg), mgText: text(r.mg), form, brand: text(r.brand), audience: aud, inStock, rx, location: text(r.location), note,
@@ -153,7 +154,7 @@ function findSheet(wb: WorkBook, wanted: string): string | null {
   return wb.SheetNames.find((n) => norm(n) === w) ?? wb.SheetNames.find((n) => norm(n).includes(w.split(' ')[0])) ?? null;
 }
 
-function rowsOf<T>(wb: WorkBook, sheetName: string | null, cols: Record<string, keyof T>, errors: ImportError[], label: string): { row: number; r: T }[] {
+function rowsOf<T>(wb: WorkBook, sheetName: string | null, cols: Record<string, keyof T>, errors: ImportError[], label: string, important: (keyof T)[] = []): { row: number; r: T }[] {
   if (!sheetName) {
     errors.push({ sheet: label, row: 0, message: `không tìm thấy sheet "${label}".` });
     return [];
@@ -167,6 +168,12 @@ function rowsOf<T>(wb: WorkBook, sheetName: string | null, cols: Record<string, 
     const key = cols[h];
     if (key !== undefined && idx[key] === undefined) idx[key] = i;
   });
+  for (const key of important) {
+    if (idx[key] === undefined) {
+      const title = Object.entries(cols).find(([, k]) => k === key)?.[0] ?? String(key);
+      errors.push({ sheet: label, row: 1, message: `không thấy cột "${title}" trên dòng tiêu đề (có thể bạn đặt tên khác). Cột này bị bỏ trống cho mọi dòng.` });
+    }
+  }
   const out: { row: number; r: T }[] = [];
   for (let i = 1; i < grid.length; i++) {
     const line = grid[i];
@@ -186,8 +193,8 @@ function rowsOf<T>(wb: WorkBook, sheetName: string | null, cols: Record<string, 
 
 export function parseWorkbook(wb: WorkBook, fileName: string): DataSet {
   const errors: ImportError[] = [];
-  const drugs = rowsOf<RawDrug>(wb, findSheet(wb, SHEET.drugs), DRUG_COLS, errors, SHEET.drugs);
-  const rules = rowsOf<RawRule>(wb, findSheet(wb, SHEET.rules), RULE_COLS, errors, SHEET.rules);
+  const drugs = rowsOf<RawDrug>(wb, findSheet(wb, SHEET.drugs), DRUG_COLS, errors, SHEET.drugs, ['mg', 'form']);
+  const rules = rowsOf<RawRule>(wb, findSheet(wb, SHEET.rules), RULE_COLS, errors, SHEET.rules, ['timesPerDay', 'maxPerDay', 'warning']);
   const syms = rowsOf<RawSymptom>(wb, findSheet(wb, SHEET.symptoms), SYM_COLS, errors, SHEET.symptoms);
   const flagSheet = findSheet(wb, SHEET.flags);
   const flags = flagSheet ? rowsOf<RawFlag>(wb, flagSheet, FLAG_COLS, errors, SHEET.flags) : []; // không có sheet này thì dùng mặc định, không báo lỗi

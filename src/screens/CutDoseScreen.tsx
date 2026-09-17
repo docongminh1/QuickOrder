@@ -84,7 +84,10 @@ export default function CutDoseScreen() {
   const changeAudience = (a: Audience) => {
     setAudience(a);
     if (a === 'Người lớn') setKgText('');
-    else setTimeout(() => kgRef.current?.focus(), 50);
+    else {
+      setConds((cur) => cur.filter((c) => c !== 'preg' && c !== 'old')); // chip này ẩn với trẻ em, đừng để nó âm thầm bật
+      setTimeout(() => kgRef.current?.focus(), 50);
+    }
   };
   const hasInput = selected.length > 0 || conds.length > 0 || flags.length > 0 || kgText !== '' || audience !== 'Người lớn' || condsDone || flagsDone;
   const gateOpen = condsDone && flagsDone;
@@ -252,7 +255,7 @@ function DoseCard({ item, flagged }: { item: DoseItem; flagged: string | null })
   const name = item.drug ? item.drug.name : item.active;
   const strength = item.drug ? [item.drug.mgText && `${item.drug.mgText} mg`, item.drug.form].filter(Boolean).join(' · ') : '';
   return (
-    <Card style={[{ gap: 3 }, flagged && { borderColor: C.danger, borderWidth: 1.5 }]}>
+    <Card style={[{ gap: 3 }, (flagged || item.caution) && { borderColor: C.danger, borderWidth: 1.5 }]}>
       <View style={s.cardHead}>
         <Text style={s.group}>{item.group.toUpperCase()}</Text>
         <Text style={s.active}>{item.active}</Text>
@@ -268,6 +271,11 @@ function DoseCard({ item, flagged }: { item: DoseItem; flagged: string | null })
       ) : null}
       {item.rxOnly ? (
         <Text style={[s.dose, { color: C.danger }]}>Thuốc kê đơn. Không tự bán, hỏi dược sĩ.</Text>
+      ) : item.caution ? (
+        <>
+          <Text style={[s.dose, { color: C.muted, textDecorationLine: 'line-through' }]}>{item.doseLine}</Text>
+          <Text style={s.cautionText}>⛔ KHÔNG TỰ CẮT. {item.caution}</Text>
+        </>
       ) : item.outOfStock ? (
         <Text style={[s.dose, { color: C.danger }]}>Quầy đang hết thuốc này. Hỏi dược sĩ thuốc thay.</Text>
       ) : (
@@ -346,6 +354,7 @@ const s = StyleSheet.create({
   calcText: { fontSize: 12, color: C.accent, fontVariant: ['tabular-nums'] },
   total: { fontSize: 15, fontWeight: '700', color: C.ink, marginTop: 2 },
   flagged: { fontSize: 13, color: C.danger, fontWeight: '600', marginTop: 2 },
+  cautionText: { fontSize: 14, color: C.danger, fontWeight: '700', lineHeight: 20, backgroundColor: C.dangerSoft, borderRadius: 6, padding: 8 },
   alt: { fontSize: 12.5, color: C.muted, marginTop: 2 },
   or: { fontSize: 12.5, color: C.ink2, marginTop: 2, fontStyle: 'italic' },
   extraBtn: { paddingVertical: 10, alignItems: 'center', borderWidth: 1, borderColor: C.line, borderRadius: R.md, backgroundColor: C.surface2 },

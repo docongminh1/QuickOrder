@@ -1,7 +1,7 @@
 # Cắt Liều Nhanh · hướng dẫn nhanh
 
 ## Cài trên Android
-1. Chép file `CatLieuNhanh-v1.0.7.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
+1. Chép file `CatLieuNhanh-v1.0.8.apk` vào điện thoại (hoặc mở thẳng từ Google Drive trên điện thoại).
 2. Bấm vào file, Android hỏi "Cho phép cài ứng dụng từ nguồn này" → Cho phép → Cài đặt.
 3. Mở app. Lúc đầu app đã có sẵn bộ dữ liệu mẫu (59 thuốc, 81 dòng luật, 26 triệu chứng) để bấm thử ngay.
 
@@ -10,7 +10,7 @@
 2. **Khách có gì đặc biệt?** Hỏi: có thai/cho bú, đau dạ dày, dị ứng thuốc, trên 65 tuổi, đang uống thuốc khác. Không có thì bấm "Không có gì đặc biệt". Chấm cái nào có → app bắt gọi dược sĩ duyệt và đánh dấu đỏ thuốc cần tránh. **Chưa trả lời bước này thì app chưa hiện thuốc.**
 3. **Dấu hiệu nguy hiểm?** Bấm "Xem câu hỏi", hỏi khách. Không có thì bấm "✓ Không có dấu hiệu nào". Chấm 1 dấu hiệu là app KHÔNG ra thuốc, chỉ hiện "đi khám / gọi dược sĩ". Danh sách này dược sĩ sửa trong sheet *Dấu hiệu nguy hiểm*. **Chưa trả lời bước này thì app chưa hiện thuốc.**
 4. **Khách bị gì?** Gõ lời khách nói ("đi ngoài", "nhức đầu", "nổi mẩn") vào ô tìm, app lọc ra chip đúng, bấm chip. Từ khách hay nói dược sĩ điền ở cột *Khách hay nói* sheet Triệu chứng.
-5. **Thuốc cần cắt.** Dòng đen ghi rõ đang tính cho ai, mấy ngày. Đọc từng thẻ, lấy đúng số "Cắt đủ N ngày". Xong bấm **Khách mới** để xoá sạch, khỏi dính cân nặng khách trước.
+5. **Thuốc cần cắt.** Dòng đen ghi rõ đang tính cho ai, mấy ngày. Thẻ nào có khung đỏ **KHÔNG TỰ CẮT** là app thấy liều sau làm tròn lệch quá 25% so với liều tính hoặc vượt tối đa/ngày (thường gặp ở bé nhỏ với thuốc viên hàm lượng lớn): gọi dược sĩ, đừng tự đưa. Đọc từng thẻ, lấy đúng số "Cắt đủ N ngày". Xong bấm **Khách mới** để xoá sạch, khỏi dính cân nặng khách trước.
 
 ## 3 tab trong app
 - **Cắt liều**: chọn Người lớn / Trẻ em, gõ số kg (trẻ em), chấm triệu chứng, chọn cắt cho mấy ngày → danh sách thuốc, hàm lượng, số gói/viên mỗi lần, số lần/ngày và **tổng số gói/viên cần cắt**. Dòng xanh nhỏ là phép tính để kiểm lại. Quên nhập kg thì app nhắc đỏ.

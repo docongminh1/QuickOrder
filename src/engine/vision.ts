@@ -121,7 +121,7 @@ export function matchDrug(ds: DataSet, name: string, strength = ''): { drug: Dru
     const dn = norm(d.name);
     let score = 99;
     if (dn === n) score = 0;
-    else if (dn.startsWith(n) || n.startsWith(dn)) score = 1;
+    else if ((n.length >= 4 && dn.startsWith(n)) || (dn.length >= 4 && n.startsWith(dn))) score = 1;
     else {
       const base = n.replace(/\s*\d+([.,]\d+)?(\s*\/\s*\d+)?\s*(mg)?\s*$/, '').trim(); // bỏ số hàm lượng ở cuối
       const dbase = dn.replace(/\s*\d+([.,]\d+)?(\s*\/\s*\d+)?\s*(mg)?\s*$/, '').trim();

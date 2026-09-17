@@ -41,6 +41,7 @@ jobs:
           npx tsx tools/sim-500.ts | head -20
           npx tsx tools/test-vision.ts > /dev/null
           npx tsx tools/test-vision-deep.ts
+          npx tsx tools/fuzz-engine.ts > /dev/null
 
       - name: Build APK release
         id: build
