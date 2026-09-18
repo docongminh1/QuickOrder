@@ -45,4 +45,10 @@ npx tsx tools/test-vision-deep.ts # 20 ca khớp tên + áp dụng → xuất Ex
 - Keystore và mật khẩu nằm trong GitHub Secrets, không bao giờ commit `android/`, `*.keystore`, `keystore.properties`.
 - Khi làm trên Mac của chủ app: `tools/build-apk.sh` build local, có máy ảo Android `cln_test` để bấm thử bằng adb.
   Bẫy adb: phím BACK trên tab khác sẽ nhảy về tab đầu; `input text` không nhận dấu cách.
+- `build-apk.sh` chỉ `expo prebuild` lần đầu, nên `tools/patch-android.py` phải đồng bộ version từ `app.json` vào
+  `android/app/build.gradle` mỗi lần build (từng có APK tên v1.0.9 mà manifest ghi 1.0.6). Script tự soát bằng `aapt2 dump badging`
+  trước khi copy vào `dist/`; đừng bỏ bước này. Đừng tin tên file APK — kiểm manifest.
+- Bấm thử như nhân viên thật trên máy ảo: `python3 tools/ui-drive.py <số khách> <id bắt đầu>` (kịch bản `tools/customers.json`
+  sinh từ `tools/gen-customers.ts`); mỗi khách ~1 phút, log ghi ✓/✗ + ảnh lỗi. Máy ảo quá tải thì `input text` nuốt/đúp phím —
+  tay máy đã tự soát chữ và gõ lại, nhưng ca ✗ kèm "lỗi tay máy"/"gõ sai chữ" là lỗi môi trường, chạy lại ca đó trước khi kết luận lỗi app.
 - Cập nhật `HUONG_DAN.md` mỗi khi đổi luồng dùng.

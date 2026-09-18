@@ -8,8 +8,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOT = '/private/tmp/claude-501/-Users-docongminh-Desktop-AICC/0d694266-42d4-46f9-afc8-76032dd8525c/scratchpad/uidrive'
 os.makedirs(SHOT, exist_ok=True)
 
+TIMING = open(os.path.join(SHOT, 'timing.log'), 'a')
 def sh(*a, timeout=30):
-    return subprocess.run([ADB, *a], capture_output=True, timeout=timeout).stdout
+    t = time.time()
+    try: return subprocess.run([ADB, *a], capture_output=True, timeout=timeout).stdout
+    finally: TIMING.write(f"{time.time()-t:.2f} {' '.join(a[:4])}\n"); TIMING.flush()
 def tap(x, y, wait=0.6): sh('shell', 'input', 'tap', str(int(x)), str(int(y))); time.sleep(wait)
 def swipe(y1, y2, wait=0.8): sh('shell', 'input', 'swipe', '540', str(y1), '540', str(y2), '250'); time.sleep(wait)
 def type_text(t, wait=0.6): sh('shell', 'input', 'text', t.replace(' ', '%s')); time.sleep(wait)
@@ -28,13 +31,49 @@ def norm(s):
     return s.replace('đ', 'd').replace('Đ', 'D').lower().strip()
 def kb_shown():
     return b'mInputShown=true' in sh('shell', 'dumpsys', 'input_method')
+IME_OFF = None
 def hide_kb():
-    if kb_shown(): sh('shell', 'input', 'keyevent', '111'); time.sleep(0.4)
-    if kb_shown(): sh('shell', 'input', 'keyevent', '4'); time.sleep(0.4)
+    global IME_OFF
+    if IME_OFF is None: IME_OFF = (sh('shell', 'ime', 'list', '-s', timeout=10).strip() == b'')  # đã `ime disable` → không có gì để ẩn
+    if IME_OFF: return
+    # KHÔNG dùng BACK (keyevent 4): bàn phím vừa tự đóng thì BACK rơi vào app ở gốc tab → app thoát ra màn hình chính,
+    # mọi khách sau đó đều sai (từng xảy ra ở khách 105-118). Máy ảo đã `ime disable` nên hầu như không còn bàn phím để ẩn.
+    for _ in range(2):
+        if not kb_shown(): return
+        sh('shell', 'input', 'keyevent', '111'); time.sleep(0.4)
 
-def dump():
+APP = 'com.basebs.catlieunhanh'
+def ensure_app():
+    """App phải đang ở trước màn; nếu lỡ bị đẩy ra ngoài (launcher, hộp thoại hệ thống) thì mở lại."""
+    sh('shell', 'cmd', 'statusbar', 'collapse', timeout=8)  # vuốt trên launcher hay kéo bảng thông báo xuống che app
     for _ in range(3):
-        raw = sh('exec-out', 'uiautomator', 'dump', '/dev/tty', timeout=40)
+        top = sh('shell', 'dumpsys', 'activity', 'activities', timeout=15)
+        m = re.search(rb'topResumedActivity=ActivityRecord\{[^}]*\}', top) or re.search(rb'ResumedActivity: ActivityRecord\{[^}]*\}', top)
+        if m and APP.encode() in m.group(0): return True
+        sh('shell', 'am', 'start', '-n', APP + '/.MainActivity'); time.sleep(4)
+    return False
+
+UIXML = os.path.join(SHOT, 'ui.xml')
+def dump():
+    """Đọc cây giao diện. Không chờ luồng `adb shell uiautomator dump` kết thúc: kênh adb trên Mac cứ ~10 lần lại treo 40-60s
+    ở bước đóng luồng dù máy ảo đã ghi file xong sau ~3s (client kẹt trong read(), `adb shell echo` lúc đó vẫn 0.04s).
+    Cách làm: chạy dumper tách nền trong máy (nohup … &), thăm file bằng lệnh nhỏ tới khi có </hierarchy>, rồi `adb pull`."""
+    for window in (8, 8, 8, 25):  # bình thường ~3s; treo thì bỏ sau 8s và chạy lại, lần cuối chờ lâu hẳn
+        raw = b''
+        try:
+            sh('shell', 'rm -f /sdcard/ui.xml; nohup uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 </dev/null &', timeout=8)
+            t0 = time.time()
+            while time.time() - t0 < window:
+                time.sleep(0.4)
+                tail = sh('shell', 'tail -c 16 /sdcard/ui.xml 2>/dev/null', timeout=8)
+                if b'</hierarchy>' in tail: break
+            else:
+                continue
+            if os.path.exists(UIXML): os.remove(UIXML)
+            sh('pull', '/sdcard/ui.xml', UIXML, timeout=10)
+            if os.path.exists(UIXML): raw = open(UIXML, 'rb').read()
+        except subprocess.TimeoutExpired:
+            continue
         i = raw.find(b'<?xml')
         if i >= 0:
             xml = raw[i:]; j = xml.rfind(b'</hierarchy>')
@@ -71,20 +110,31 @@ def tap_text(pred, scroll=True, tries=6):
 def visible(pred):
     return find(dump(), pred) is not None
 
+class Harness(Exception):
+    """Lỗi của tay máy / máy ảo (không đọc được màn, mất tab…) — không phải lỗi app; khách đó sẽ được làm lại."""
+
+def dump_or_raise():
+    nodes = dump()
+    if not nodes: raise Harness('không đọc được màn hình')
+    return nodes
+
+POS = {}  # toạ độ đã học (tab đáy, nút Khách mới) — cố định giữa các khách, đỡ 2 lần đọc màn mỗi khách
 def go_tab(name):
-    nodes = dump(); hit = find(nodes, lambda t: t.strip() == name and True)
-    # tab ở đáy: chọn node thấp nhất có chữ đó
-    cands = [n for n in nodes if n[0].strip() == name]
-    if cands:
-        c = max(cands, key=lambda n: n[2]); tap(c[1], c[2], 1.0)
+    ensure_app()
+    if name in POS: tap(*POS[name], 1.0); return
+    nodes = dump_or_raise()
+    cands = [n for n in nodes if n[0].strip() == name]   # tab ở đáy: chọn node thấp nhất có chữ đó
+    if not cands: raise Harness(f'không thấy tab {name}')
+    c = max(cands, key=lambda n: n[2]); POS[name] = (c[1], c[2]); tap(c[1], c[2], 1.0)
 
 def new_customer():
-    nodes = dump()
-    hit = find(nodes, exact('Khách mới'))
-    if hit: tap(hit[0], hit[1], 0.8)
-    else:
-        swipe(600, 1900); nodes = dump(); hit = find(nodes, exact('Khách mới'))
-        if hit: tap(hit[0], hit[1], 0.8)
+    if 'Khách mới' in POS: tap(*POS['Khách mới'], 0.8); return
+    nodes = dump_or_raise(); hit = find(nodes, exact('Khách mới'))
+    if not hit and not find(nodes, exact('Cân')):
+        swipe(600, 1900); nodes = dump_or_raise(); hit = find(nodes, exact('Khách mới'))
+    if hit: POS['Khách mới'] = (hit[0], hit[1]); tap(hit[0], hit[1], 0.8)
+    elif not find(nodes, exact('Cân')): raise Harness('không thấy nút Khách mới lẫn đầu trang Cắt liều')
+    # không có nút Khách mới nhưng thấy đầu trang → app vừa mở, chưa có gì để xoá: đi tiếp
 
 def screen_texts(scrolls=3):
     texts = []
@@ -98,11 +148,19 @@ def run_dose(c):
     go_tab('Cắt liều'); new_customer()
     swipe(600, 1900)  # về đầu trang
     hide_kb()
+    top = dump_or_raise()
+    if not find(top, exact('Cân')):
+        POS.clear(); go_tab('Cắt liều'); new_customer(); swipe(600, 1900); top = dump_or_raise()  # toạ độ nhớ sai? học lại
+        if not find(top, exact('Cân')): raise Harness('không thấy đầu trang Cắt liều')
+    def top_tap(pred):
+        h = find(top, pred)
+        if not h or not (60 < h[1] < 2200): return False
+        tap(h[0], h[1]); return True
     # 1. ai uống
     if c['audience'] == 'Trẻ em':
-        if not tap_text(exact('Trẻ em'), scroll=False): return False, 'không thấy nút Trẻ em'
+        if not top_tap(exact('Trẻ em')): return False, 'không thấy nút Trẻ em'
         if c['kg'] is not None:
-            time.sleep(1.0); type_text(str(c['kg']))
+            time.sleep(0.8); type_text(str(c['kg']))
             # số kg phải nằm TRONG ô Cân (cùng dòng với nhãn "Cân"); lạc vào ô tìm thì xoá và gõ lại vào đúng ô
             def kg_ok():
                 nodes = dump(); lab = find(nodes, exact('Cân')); val = find(nodes, exact(str(c['kg'])))
@@ -115,25 +173,47 @@ def run_dose(c):
                 if lab: tap(lab[0] + 120, lab[1], 0.6); type_text(str(c['kg']))
             if not kg_ok(): return False, 'không gõ được số kg vào ô Cân'
         hide_kb()
-    # 2. tình trạng
-    if c['cond']:
-        ok = tap_text(exact('Đau dạ dày'), scroll=False)
-    else:
-        ok = tap_text(exact('Không có gì đặc biệt'), scroll=False)
-    if not ok: return False, 'không bấm được bước 2'
-    # 3. cờ đỏ
+        top = dump_or_raise()   # chọn Trẻ em xong bước 2 mất chip 'Có thai'/'Trên 65' → mọi thứ bên dưới dịch lên: đọc lại toạ độ
+    # 2. tình trạng + 3. cờ đỏ: bấm theo toạ độ đã đọc ở đầu trang (bố cục trên không đổi), rồi đọc 1 lần để kiểm
+    step2 = exact('Đau dạ dày') if c['cond'] else exact('Không có gì đặc biệt')
+    if not top_tap(step2): return False, 'không bấm được bước 2'
     if c['flag']:
-        if not tap_text(starts('Xem câu hỏi'), scroll=False): return False, 'không mở được câu hỏi cờ đỏ'
+        if not top_tap(starts('Xem câu hỏi')): return False, 'không mở được câu hỏi cờ đỏ'
         if not tap_text(starts('Khó thở'), scroll=True): return False, 'không thấy cờ đỏ Khó thở'
+        nodes = dump_or_raise()
     else:
-        if not tap_text(starts('✓ Không có dấu hiệu'), scroll=False): return False, 'không bấm được bước 3'
-    # 4. triệu chứng qua ô tìm
-    for sym, typed in zip(c['symptoms'], c['typed']):
-        if not tap_text(starts('Gõ lời khách nói'), scroll=True): return False, 'không thấy ô tìm triệu chứng'
-        if not type_into(starts('Gõ lời khách nói'), typed): return False, f'máy ảo gõ sai chữ "{typed}" (3 lần)'
+        if not top_tap(starts('✓ Không có dấu hiệu')): return False, 'không bấm được bước 3'
+        nodes = dump_or_raise()
+        for _fix in range(2):
+            pend = [n for n in nodes if n[0].strip() == 'chưa hỏi']   # nhãn cạnh tiêu đề bước còn thiếu
+            if not pend: break
+            h2 = find(nodes, starts('2 · ')); h3 = find(nodes, starts('3 · '))
+            for n in pend:   # bấm lại ĐÚNG bước còn thiếu (chip là công tắc, bấm thừa sẽ tắt)
+                if h2 and abs(n[2] - h2[1]) < 40:
+                    if not tap_text(step2, scroll=False): return False, 'không bấm được bước 2'
+                elif h3 and abs(n[2] - h3[1]) < 40:
+                    if not tap_text(starts('✓ Không có dấu hiệu'), scroll=False): return False, 'không bấm được bước 3'
+            nodes = dump_or_raise()
+        if any(n[0].strip() == 'chưa hỏi' for n in nodes): return False, 'bước 2/3 chưa nhận sau 2 lần bấm'
+    # 4. triệu chứng qua ô tìm: gõ xong đọc 1 lần vừa soát chữ vừa tìm chip
+    for i_sym, (sym, typed) in enumerate(zip(c['symptoms'], c['typed'])):
+        box = find(nodes, starts('Gõ lời khách nói')) if (nodes and i_sym == 0) else None
+        if box and 60 < box[1] < 2200: tap(box[0], box[1])
+        elif not tap_text(starts('Gõ lời khách nói'), scroll=True): return False, 'không thấy ô tìm triệu chứng'
+        type_text(typed, 0.8); nodes = dump_or_raise(); typed_ok = bool(find(nodes, lambda t: norm(t) == norm(typed)))
+        for _retry in range(2):
+            if typed_ok: break
+            x = find(nodes, exact('✕'))                 # máy ảo nuốt/đúp phím → xoá, gõ lại
+            if x: tap(x[0], x[1], 0.5)
+            if not tap_text(starts('Gõ lời khách nói'), scroll=True): return False, 'không thấy ô tìm triệu chứng'
+            type_text(typed, 0.8); nodes = dump_or_raise(); typed_ok = bool(find(nodes, lambda t: norm(t) == norm(typed)))
+        if not typed_ok: return False, f'máy ảo gõ sai chữ "{typed}" (3 lần)'
         hide_kb()
-        if not tap_text(exact(sym), scroll=True, tries=3):
+        chip = find(nodes, exact(sym))
+        if chip and 60 < chip[1] < 2200: tap(chip[0], chip[1])
+        elif not tap_text(exact(sym), scroll=True, tries=3):
             return False, f'không thấy chip "{sym}" sau khi gõ "{typed}"'
+        nodes = None
     # 5. kết quả
     if c['flag']:
         swipe(1800, 600); swipe(1800, 600)
@@ -180,13 +260,33 @@ def run_lookup(c):
     texts = [n[0] for n in dump()]
     e = c['expect']
     if e.get('none'):
-        ok = any('Không có thuốc tên này' in t for t in texts) or any('Có phải bạn tìm' in t for t in texts)
+        # nhãn trên màn in HOA ("CÓ PHẢI BẠN TÌM") → so không phân biệt hoa/thường/dấu
+        ok = any(norm('Không có thuốc tên này') in norm(t) for t in texts) or any(norm('Có phải bạn tìm') in norm(t) for t in texts)
         return ok, 'báo chưa có / gợi ý ✓' if ok else 'không báo chưa có'
     ok = e['first'] in texts
     loc_ok = (not e['location']) or any(e['location'] in t for t in texts)
     x = find(dump(), exact('✕'));
     if x: tap(x[0], x[1], 0.3)
     return ok and loc_ok, f"{e['first']}{' 📍' + e['location'] if e['location'] else ''}{'' if ok and loc_ok else ' KHÔNG THẤY'}"
+
+def wait_for_calm():
+    """Mac đang bận (Chrome/VS Code của chủ máy) thì máy ảo đọc màn không kịp → toàn ca sai giả. Tải >20 thì đứng chờ, <14 chạy tiếp."""
+    paused = False
+    while True:
+        load = os.getloadavg()[0]
+        if load < (14 if paused else 20):
+            if paused: print(f"▶ tải máy {load:.0f}, chạy tiếp", flush=True)
+            return
+        if not paused: print(f"⏸ tải máy {load:.0f} quá cao, tạm dừng chờ máy rảnh", flush=True); paused = True
+        time.sleep(30)
+
+def run_one(c):
+    try:
+        return run_dose(c) if c['kind'] == 'dose' else run_lookup(c)
+    except Harness as ex:
+        return None, f'lỗi tay máy: {ex}'
+    except Exception as ex:
+        return None, f'lỗi tay máy: {type(ex).__name__}: {ex}'
 
 def main():
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 20
@@ -195,13 +295,16 @@ def main():
     cust = [c for c in cust if c['id'] >= start][:n]
     res = []; t0 = time.time()
     for c in cust:
-        t1 = time.time()
-        try:
-            ok, note = run_dose(c) if c['kind'] == 'dose' else run_lookup(c)
-        except Exception as ex:
-            ok, note = False, f'lỗi tay máy: {ex}'
+        wait_for_calm(); t1 = time.time()
+        ok, note = run_one(c)
+        if ok is None:                       # lỗi tay máy → mở lại app, làm lại khách này 1 lần
+            POS.clear(); ensure_app(); time.sleep(3); wait_for_calm()
+            ok2, note2 = run_one(c)
+            if ok2 is None: ok, note = False, note2 + ' (đã thử lại)'
+            else: ok, note = ok2, note2
         if not ok:
-            sh('exec-out', 'screencap', '-p'); open(f"{SHOT}/fail-{c['id']}.png", 'wb').write(sh('exec-out', 'screencap', '-p'))
+            try: open(f"{SHOT}/fail-{c['id']}.png", 'wb').write(sh('exec-out', 'screencap', '-p', timeout=20))
+            except Exception: pass
         desc = f"{c['kind']} {c.get('audience','')} {c.get('kg') or ''} {'+'.join(c.get('symptoms', [])) or c.get('query','')}{' CỜ ĐỎ' if c.get('flag') else ''}{' ĐẶC BIỆT' if c.get('cond') else ''}"
         line = f"#{c['id']:3d} {'✓' if ok else '✗'} {desc.strip()} → {note} ({time.time()-t1:.0f}s)"
         print(line, flush=True); res.append((c['id'], ok, desc, note))
