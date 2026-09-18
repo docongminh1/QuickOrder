@@ -9,3 +9,4 @@ keystore.properties
 .claude/
 CatLieuNhanh_quay.xlsx
 .secrets/
+__pycache__/
